@@ -11,49 +11,431 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"
         rel="stylesheet" />
+    <!-- Build Version: 1.6 (Diagnostic Update) -->
+    <!-- Supabase CDN Link -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Supabase Client Configuration -->
-    <script type="module">
-        import { sbClient } from './supabaseClient.js';
-        window.sbClient = sbClient;
-    </script>
+    <script src="./supabaseClient.js?v=build_v1.6"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#f49d25",
-                        "background-light": "#f8f7f5",
-                        "background-dark": "#221a10",
+                        primary: "#f97316",
+                        secondary: "#ea580c",
                     },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
+                    animation: {
+                        'slide-down': 'slideDown 0.3s ease-out forwards',
+                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
                     },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
+                    keyframes: {
+                        slideDown: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
                 },
             },
-        }
+        };
     </script>
     <title>Authentication | Modern Portal</title>
 </head>
 
-<body
-    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
-    <header
-        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 h-16 lg:px-10">
-        <a href="index.html" class="flex items-center">
-            <img src="logo.png" alt="MENU BANAO Logo"
-                class="h-32 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300" />
-        </a>
-        <button
-            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-colors">
-            <span class="truncate">Need Help?</span>
-        </button>
+<body class="bg-slate-50 dark:bg-slate-950 font-['Inter'] min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Build Indicator Overlay -->
+    <div id="debug-banner" class="fixed top-2 right-2 flex flex-col items-end gap-1 z-[9999]">
+        <span class="px-2 py-1 bg-slate-800 text-white text-[10px] rounded-lg font-mono opacity-50">Build: v1.6</span>
+        <span id="conn-status"
+            class="px-2 py-1 bg-yellow-500 text-black text-[10px] rounded-lg font-mono shadow-lg transition-all duration-500">Connecting
+            🌐...</span>
+        <div id="network-hint"
+            class="hidden px-2 py-1 bg-red-100 text-red-600 text-[9px] rounded-lg font-bold border border-red-200">
+            Shields/Adblock detected!</div>
+    </div>
+    <header class="p-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a class="flex items-center gap-2 group" href="index.html">
+                <div
+                    class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="https://menubanao.com/wp-content/uploads/2024/03/logo-menubanao.png" alt="logo"
+                        class="w-8 h-8 object-contain">
+                </div>
+                <span
+                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Menu
+                    Banao</span>
+            </a>
+            <a href="https://wa.me/917307073285"
+                class="px-5 py-2 text-sm font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-full transition-all">
+                Need Help?
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <!-- Abstract Background Shapes -->
+        <div class="absolute -top-[10%] -right-[5%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute -bottom-[10%] -left-[5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl -z-10">
+        </div>
+
+        <div
+            class="w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 transition-all">
+            <div class="p-8">
+                <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-8">
+                    <label class="flex-1 cursor-pointer">
+                        <input class="sr-only peer" id="login-tab" name="auth-tab" type="radio" checked />
+                        <div
+                            class="py-2.5 text-center font-semibold text-slate-500 peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-primary peer-checked:shadow-sm rounded-xl transition-all">
+                            Login</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input class="sr-only peer" id="signup-tab" name="auth-tab" type="radio" />
+                        <div
+                            class="py-2.5 text-center font-semibold text-slate-500 peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-primary peer-checked:shadow-sm rounded-xl transition-all">
+                            Sign Up</div>
+                    </label>
+                </div>
+
+                <div id="login-form-container">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Welcome back</h1>
+                        <p class="text-slate-500 dark:text-slate-400">Secure sign-in with your email or phone.</p>
+                    </div>
+                    <form id="login-form" class="space-y-5">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email or
+                                Phone</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
+                                <input id="login-email"
+                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
+                                    placeholder="Enter your email or phone" type="text" required />
+                            </div>
+                        </div>
+
+                        <!-- Login OTP View (Hidden initially) -->
+                        <div id="login-otp-view" class="space-y-2 hidden animate-slide-down">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                                Code</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
+                                <input id="login-otp"
+                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
+                                    placeholder="••••••" type="text" maxlength="6" />
+                            </div>
+                            <p class="text-[10px] text-slate-400 ml-1 italic">Enter the 6-digit code we sent you.</p>
+                        </div>
+
+                        <div id="login-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
+                        <button id="login-submit"
+                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                            type="submit">
+                            <span>Get OTP</span>
+                        </button>
+                    </form>
+                    <div class="relative my-8">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-slate-200 dark:border-slate-800"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-3 bg-white dark:bg-slate-900 text-slate-400">Or continue with</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button
+                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-medium">
+                            <img class="w-5 h-5" src="https://www.svgrepo.com/show/475656/google-color.svg"
+                                alt="Google">
+                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Google</span>
+                        </button>
+                        <button
+                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-medium">
+                            <img class="w-5 h-5 dark:invert"
+                                src="https://www.svgrepo.com/show/303108/apple-black-logo.svg" alt="Apple">
+                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Apple</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="hidden" id="signup-form-container">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-2">Join thousands of professionals today.</p>
+                    </div>
+                    <form id="signup-form" class="space-y-4">
+                        <div id="signup-identifier-view" class="space-y-4 transition-all">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full
+                                    Name</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
+                                    <input id="signup-name"
+                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
+                                        placeholder="Enter your full name" type="text" required />
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
+                                    Address</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
+                                    <input id="signup-email"
+                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
+                                        placeholder="Enter your email address" type="email" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sign Up OTP View (Hidden initially) -->
+                        <div id="signup-otp-view" class="space-y-4 hidden animate-slide-down">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                                    Code</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
+                                    <input id="signup-otp"
+                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
+                                        placeholder="••••••" type="text" maxlength="6" />
+                                </div>
+                                <p class="text-[10px] text-slate-400 ml-1 italic">Enter the code sent to your email.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2 py-2" id="signup-terms-view">
+                            <input
+                                class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                                id="terms" type="checkbox" required />
+                            <label class="text-xs text-slate-500 dark:text-slate-400 leading-normal" for="terms">
+                                I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and
+                                <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+                            </label>
+                        </div>
+                        <div id="signup-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
+                        <button id="signup-submit"
+                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                            type="submit">
+                            <span>Get Started</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="px-8 pb-8 text-center">
+                <p class="text-slate-500 dark:text-slate-400 text-sm">
+                    By continuing, you agree to Menu Banao standard business terms and policies.
+                </p>
+            </div>
+        </div>
+    </main>
+    <footer class="py-6 text-center text-slate-400 dark:text-slate-600 text-sm">
+        © 2024 Menu Banao. <span class="opacity-30">Build: v1.5</span>
+    </footer>
+    <script>
+        // --- Core Logic (V1.5 Diagnostic Mode) ---
+        setTimeout(() => {
+            const statusEl = document.getElementById('conn-status');
+            if (window.sbClient) {
+                statusEl.innerText = "SUPABASE: CONNECTED ✅";
+                statusEl.classList.replace('bg-yellow-500', 'bg-green-600');
+                statusEl.classList.add('text-white');
+            } else {
+                statusEl.innerText = "SUPABASE: FAILED ❌";
+                statusEl.classList.replace('bg-yellow-500', 'bg-red-600');
+                statusEl.classList.add('text-white');
+            }
+        }, 1000);
+
+        const loginTab = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const signupFormContainer = document.getElementById('signup-form-container');
+
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const loginSubmitBtn = document.getElementById('login-submit');
+        const signupSubmitBtn = document.getElementById('signup-submit');
+
+        const updateTabs = () => {
+            if (loginTab.checked) {
+                loginFormContainer.classList.remove('hidden');
+                signupFormContainer.classList.add('hidden');
+            } else if (signupTab.checked) {
+                signupFormContainer.classList.remove('hidden');
+                loginFormContainer.classList.add('hidden');
+            }
+        };
+
+        loginTab.addEventListener('change', updateTabs);
+        signupTab.addEventListener('change', updateTabs);
+
+        // Utility: Set Loading
+        const setBtnLoading = (btn, isLoading, text) => {
+            btn.disabled = isLoading;
+            if (isLoading) {
+                btn.innerHTML = `<span>${text}...</span><span class="material-symbols-outlined animate-spin text-sm">sync</span>`;
+            } else {
+                btn.innerHTML = `<span>${text}</span>`;
+            }
+        };
+
+        // --- Auth Persistence & Hash Check ---
+        window.addEventListener('load', async () => {
+            if (window.location.protocol === 'file:') {
+                alert("STILL ON FILE:// - Please click 'Go Live' in VS Code or run 'npm run dev'");
+            }
+
+            try {
+                const { data: { session } } = await window.sbClient.auth.getSession();
+                if (session) window.location.href = '../Donero-Cafe/admin.html';
+            } catch (e) { console.warn("Session check failed (Expected if offline)"); }
+
+            const hash = window.location.hash;
+            if (hash === '#signup') { signupTab.checked = true; updateTabs(); }
+            else if (hash === '#login') { loginTab.checked = true; updateTabs(); }
+        });
+
+        let loginFlow = 'IDENTIFIER'; // IDENTIFIER or OTP
+        let signupFlow = 'IDENTIFIER';
+
+        // --- Handle Sign In ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('login-email').value;
+            const otpCode = document.getElementById('login-otp').value;
+            const loginOtpView = document.getElementById('login-otp-view');
+
+            loginError.classList.add('hidden');
+
+            if (loginFlow === 'IDENTIFIER') {
+                setBtnLoading(loginSubmitBtn, true, 'Sending OTP');
+                try {
+                    const isEmail = identifier.includes('@');
+                    const { error } = await window.sbClient.auth.signInWithOtp(
+                        isEmail ? { email: identifier } : { phone: identifier }
+                    );
+                    if (error) throw error;
+
+                    loginFlow = 'OTP';
+                    loginOtpView.classList.remove('hidden');
+                    document.getElementById('login-email').disabled = true;
+                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
+                } catch (err) {
+                    console.error("DEBUG:", err);
+                    loginError.innerText = "Error: " + (err.message || "Failed to reach database");
+                    loginError.classList.remove('hidden');
+                    setBtnLoading(loginSubmitBtn, false, 'Get OTP');
+                }
+            } else {
+                setBtnLoading(loginSubmitBtn, true, 'Verifying');
+                try {
+                    const isEmail = identifier.includes('@');
+                    const { data, error } = await window.sbClient.auth.verifyOtp({
+                        ...(isEmail ? { email: identifier } : { phone: identifier }),
+                        token: otpCode,
+                        type: isEmail ? 'magiclink' : 'sms'
+                    });
+                    if (error) throw error;
+
+                    if (data.session) {
+                        sessionStorage.setItem('donero_admin_auth', 'true');
+                        window.location.href = '../Donero-Cafe/admin.html';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    loginError.innerText = err.message;
+                    loginError.classList.remove('hidden');
+                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
+                }
+            }
+        });
+
+        // --- Handle Sign Up ---
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const name = document.getElementById('signup-name').value;
+            const otpCode = document.getElementById('signup-otp').value;
+            const signupIdentifierView = document.getElementById('signup-identifier-view');
+            const signupOtpView = document.getElementById('signup-otp-view');
+
+            signupError.classList.add('hidden');
+
+            if (signupFlow === 'IDENTIFIER') {
+                setBtnLoading(signupSubmitBtn, true, 'Preparing OTP');
+                try {
+                    // NEW FLOW: Name + Email -> signInWithOtp
+                    const { error } = await window.sbClient.auth.signInWithOtp({
+                        email,
+                        options: {
+                            data: { full_name: name },
+                            shouldCreateUser: true
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    signupFlow = 'OTP';
+                    signupIdentifierView.classList.add('hidden');
+                    signupOtpView.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
+                } catch (err) {
+                    console.error("DEBUG:", err);
+                    signupError.innerText = "Error: " + (err.message || "Failed to contact database");
+                    signupError.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Get Started');
+                }
+            } else {
+                setBtnLoading(signupSubmitBtn, true, 'Finalizing');
+                try {
+                    const { data, error } = await window.sbClient.auth.verifyOtp({
+                        email,
+                        token: otpCode,
+                        type: 'signup'
+                    });
+
+                    if (error) throw error;
+
+                    if (data.user) {
+                        sessionStorage.setItem('donero_admin_auth', 'true');
+                        window.location.href = '../Donero-Cafe/admin.html';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    signupError.innerText = err.message;
+                    signupError.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
+                }
+            }
+        });
+
+        // Expose helper to window for HTML onclick
+        window.handleForgotPassword = async () => {
+            const email = document.getElementById('login-email').value;
+            if (!email) { alert('Enter email.'); return; }
+            const { error } = await window.sbClient.auth.resetPasswordForEmail(email);
+            if (error) alert(error.message);
+            else alert('Reset link sent!');
+        };
+    </script>
+    class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 h-16
+    lg:px-10">
+    <a href="index.html" class="flex items-center">
+        <img src="logo.png" alt="MENU BANAO Logo"
+            class="h-32 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300" />
+    </a>
+    <button
+        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-colors">
+        <span class="truncate">Need Help?</span>
+    </button>
     </header>
     <main class="flex-1 flex items-center justify-center p-4">
         <div
@@ -228,209 +610,8 @@
         </div>
     </main>
     <footer class="py-6 text-center text-slate-400 dark:text-slate-600 text-sm">
-        © 2024 Menu Banao. All rights reserved.
+        © 2024 Menu Banao. <span class="opacity-30">Build: v1.4</span>
     </footer>
-    <script>
-        // --- Supabase Integration Logic v1.2 (Forcing Update) ---
-        // The sbClient is now imported via module script and available globally as window.sbClient
-
-        const loginTab = document.getElementById('login-tab');
-        const signupTab = document.getElementById('signup-tab');
-        const loginFormContainer = document.getElementById('login-form-container');
-        const signupFormContainer = document.getElementById('signup-form-container');
-
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const loginError = document.getElementById('login-error');
-        const signupError = document.getElementById('signup-error');
-        const loginSubmitBtn = document.getElementById('login-submit');
-        const signupSubmitBtn = document.getElementById('signup-submit');
-
-        const updateTabs = () => {
-            if (loginTab.checked) {
-                loginFormContainer.classList.remove('hidden');
-                signupFormContainer.classList.add('hidden');
-            } else if (signupTab.checked) {
-                signupFormContainer.classList.remove('hidden');
-                loginFormContainer.classList.add('hidden');
-            }
-        };
-
-        loginTab.addEventListener('change', updateTabs);
-        signupTab.addEventListener('change', updateTabs);
-
-        // Utility: Toggle Password - REMOVED as passwords are no longer used for login/signup
-        // Utility: Set Loading
-        const setBtnLoading = (btn, isLoading, text) => {
-            btn.disabled = isLoading;
-            if (isLoading) {
-                btn.innerHTML = `<span>${text}...</span><span class="material-symbols-outlined animate-spin text-sm">sync</span>`;
-            } else {
-                btn.innerHTML = `<span>${text}</span>`;
-            }
-        };
-
-        // --- Auth Persistence Check ---
-        window.addEventListener('load', async () => {
-            // protocol check
-            if (window.location.protocol === 'file:') {
-                console.warn("WARNING: Running on file:// protocol. Supabase Auth will fail.");
-                const warning = document.createElement('div');
-                warning.innerHTML = `
-                    <div style="position:fixed;top:0;left:0;width:100%;background:#ef4444;color:white;padding:10px;text-align:center;z-index:9999;font-weight:bold;font-family:sans-serif;">
-                        ⚠️ ERROR: You are opening this via file://. Please use Vite (npm run dev) or Live Server (Port 5500).
-                    </div>
-                `;
-                document.body.prepend(warning);
-            }
-
-            const { data: { session } } = await window.sbClient.auth.getSession();
-            if (session) {
-                window.location.href = '../Donero-Cafe/admin.html';
-            }
-
-            const hash = window.location.hash;
-            if (hash === '#signup') {
-                signupTab.checked = true;
-                updateTabs();
-            } else if (hash === '#login') {
-                loginTab.checked = true;
-                updateTabs();
-            }
-        });
-
-        let loginFlow = 'IDENTIFIER'; // IDENTIFIER or OTP
-        let signupFlow = 'IDENTIFIER';
-
-        // --- Handle Sign In ---
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById('login-email').value;
-            const otpCode = document.getElementById('login-otp').value;
-            const loginOtpView = document.getElementById('login-otp-view');
-
-            loginError.classList.add('hidden');
-
-            if (loginFlow === 'IDENTIFIER') {
-                setBtnLoading(loginSubmitBtn, true, 'Sending OTP');
-                try {
-                    const isEmail = identifier.includes('@');
-                    const { error } = await window.sbClient.auth.signInWithOtp(
-                        isEmail ? { email: identifier } : { phone: identifier }
-                    );
-                    if (error) throw error;
-
-                    loginFlow = 'OTP';
-                    loginOtpView.classList.remove('hidden');
-                    document.getElementById('login-email').disabled = true;
-                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
-                } catch (err) {
-                    console.error("Supabase Error Context:", err);
-                    console.dir(err);
-                    loginError.innerText = err.message === "Failed to fetch"
-                        ? "Connection Blocked: 1. Disable Brave Shields/Ad-blockers. 2. Check internet."
-                        : err.message;
-                    loginError.classList.remove('hidden');
-                    setBtnLoading(loginSubmitBtn, false, 'Get OTP');
-                }
-            } else {
-                setBtnLoading(loginSubmitBtn, true, 'Verifying');
-                try {
-                    const isEmail = identifier.includes('@');
-                    const { data, error } = await window.sbClient.auth.verifyOtp({
-                        ...(isEmail ? { email: identifier } : { phone: identifier }),
-                        token: otpCode,
-                        type: isEmail ? 'magiclink' : 'sms'
-                    });
-                    if (error) throw error;
-
-                    if (data.session) {
-                        sessionStorage.setItem('donero_admin_auth', 'true');
-                        window.location.href = '../Donero-Cafe/admin.html';
-                    }
-                } catch (err) {
-                    console.error(err);
-                    loginError.innerText = err.message;
-                    loginError.classList.remove('hidden');
-                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
-                }
-            }
-        });
-
-        // --- Handle Sign Up ---
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signup-email').value;
-            const name = document.getElementById('signup-name').value;
-            const otpCode = document.getElementById('signup-otp').value;
-            const signupIdentifierView = document.getElementById('signup-identifier-view');
-            const signupOtpView = document.getElementById('signup-otp-view');
-
-            signupError.classList.add('hidden');
-
-            if (signupFlow === 'IDENTIFIER') {
-                setBtnLoading(signupSubmitBtn, true, 'Preparing OTP');
-                try {
-                    // NEW FLOW: Name + Email -> signInWithOtp
-                    const { error } = await window.sbClient.auth.signInWithOtp({
-                        email,
-                        options: {
-                            data: { full_name: name },
-                            shouldCreateUser: true
-                        }
-                    });
-
-                    if (error) throw error;
-
-                    signupFlow = 'OTP';
-                    signupIdentifierView.classList.add('hidden');
-                    signupOtpView.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
-                } catch (err) {
-                    console.error("Supabase Error Context:", err);
-                    console.dir(err);
-                    signupError.innerText = err.message === "Failed to fetch"
-                        ? "Connection Blocked: 1. Disable Brave Shields/Ad-blockers. 2. Verify Supabase URL."
-                        : err.message;
-                    signupError.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Get Started');
-                }
-            } else {
-                setBtnLoading(signupSubmitBtn, true, 'Finalizing');
-                try {
-                    const { data, error } = await window.sbClient.auth.verifyOtp({
-                        email,
-                        token: otpCode,
-                        type: 'signup'
-                    });
-
-                    if (error) throw error;
-
-                    if (data.user) {
-                        alert('Account verified! Redirecting to Dashboard...');
-                        sessionStorage.setItem('donero_admin_auth', 'true');
-                        window.location.href = '../Donero-Cafe/admin.html';
-                    }
-                } catch (err) {
-                    console.error(err);
-                    signupError.innerText = err.message;
-                    signupError.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
-                }
-            }
-        });
-
-        window.handleForgotPassword = async () => {
-            const email = document.getElementById('login-email').value;
-            if (!email) {
-                alert('Enter your email first.');
-                return;
-            }
-            const { error } = await window.sbClient.auth.resetPasswordForEmail(email);
-            if (error) alert(error.message);
-            else alert('Password reset link sent to your email.');
-        };
-    </script>
 </body>
 
 </html>
