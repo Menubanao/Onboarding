@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Build Version: 1.7 (Synced Authentication & Diagnostic) -->
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Menu Banao | Digital QR Menu Builder</title>
-
-    <!-- Dependencies -->
+    <title>MENU BANAO - Digital QR Menu Builder</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <!-- Supabase CDN Link (using unpkg as backup) -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <!-- Supabase Client Configuration -->
-    <script src="./supabaseClient.js?v=build_v1.9"></script>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabaseClient.js"></script>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -27,176 +23,111 @@
                     colors: {
                         primary: "#f97316",
                         secondary: "#ea580c",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#1a1612",
                     },
-                    borderRadius: {
-                        '3xl': '1.5rem',
-                        '4xl': '2rem',
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
                     },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        pop: {
-                            '0%': { transform: 'scale(0.95)', opacity: '0' },
-                            '100%': { transform: 'scale(1)', opacity: '1' },
-                        }
-                    }
                 },
             },
-        };
+        }
     </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        .hero-mesh {
-            background-color: #f8fafc;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(234, 88, 12, 0.05) 0px, transparent 50%);
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease-out;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 transition-colors duration-500">
-
-    <!-- Connectivity Monitor (v1.9) -->
-    <div id="debug-banner" class="fixed top-4 right-4 flex flex-col items-end gap-2 z-[9999]">
-        <span class="px-3 py-1 bg-slate-900/80 text-white text-[10px] rounded-full font-mono">v1.9</span>
-        <span id="conn-status"
-            class="px-3 py-1 bg-yellow-500 text-black text-[10px] rounded-full font-bold shadow-lg transition-all">CONNECTING...</span>
-    </div>
-
-    <!-- Header / Nav -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <a href="#" class="flex items-center gap-3 group">
-                <div
-                    class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <img src="https://menubanao.com/wp-content/uploads/2024/03/logo-menubanao.png"
-                        class="w-8 h-8 object-contain">
-                </div>
-                <span class="text-xl font-black text-slate-900">Menu Banao</span>
-            </a>
-
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#features"
-                    class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">Features</a>
-                <a href="#how-it-works"
-                    class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">How it works</a>
-                <div class="h-4 w-px bg-slate-200"></div>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <div class="max-w-7xl mx-auto px-6">
+        <nav class="flex justify-between items-center h-20">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" alt="MENU BANAO" class="h-20 w-auto">
+                <span class="text-xl font-bold">Menu Banao</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a class="text-sm font-medium hover:text-primary transition-all" href="#features">Features</a>
+                <a class="text-sm font-medium hover:text-primary transition-all" href="#how-it-works">How it Works</a>
                 <a href="login.html" id="nav-login-btn"
-                    class="px-6 py-2.5 bg-primary text-white text-sm font-black rounded-full shadow-lg shadow-primary/20 hover:bg-secondary transition-all">
+                    class="bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
                     Login
                 </a>
             </div>
-
-            <!-- Mobile Menu -->
-            <button
-                class="md:hidden text-slate-900 h-10 w-10 flex items-center justify-center border border-slate-200 rounded-xl">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
     <!-- Hero Section -->
-    <section class="hero-mesh pt-20 pb-32">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            <div class="lg:col-span-7 reveal active">
-                <div
-                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-6">
-                    <span class="material-symbols-outlined text-sm">auto_awesome</span>
-                    The Future of Dining
-                </div>
-                <h1 class="text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05] tracking-tight mb-8">
-                    Your Menu, <br>
-                    <span class="text-primary underline decoration-primary/20 underline-offset-8">Perfectly
-                        Digital.</span>
-                </h1>
-                <p class="text-lg text-slate-500 leading-relaxed mb-10 max-w-xl">
-                    Create a beautiful, lightning-fast digital menu in minutes. Enhance your guest experience and
-                    increase orders with QR-tech.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <button onclick="document.getElementById('lead-form').scrollIntoView({behavior:'smooth'})"
-                        class="px-8 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-2xl hover:bg-slate-800 transition-all flex items-center gap-3">
-                        Get Started Now
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </button>
-                    <button
-                        class="px-8 py-4 bg-white text-slate-900 border-2 border-slate-100 font-black rounded-2xl hover:bg-slate-50 transition-all">
-                        View Demo
-                    </button>
-                </div>
-            </div>
-            <div class="lg:col-span-5 relative reveal active">
-                <div class="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-orange-400/20 blur-3xl opacity-30">
-                </div>
-                <img src="resturant image.png"
-                    class="relative rounded-4xl shadow-2xl border-8 border-white animate-float shadow-slate-200">
+    <header class="py-20 lg:py-32 bg-gradient-to-b from-white to-primary/5 dark:from-background-dark dark:to-primary/5">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white mb-6">
+                Turn Your <span class="text-primary">Menu</span> into a <br> <span class="text-primary">Digital</span>
+                Experience
+            </h1>
+            <p class="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
+                Create QR-code menus that are mobile-friendly and easy to update. Attract more customers with a premium
+                digital experience.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="document.getElementById('lead-form').scrollIntoView({behavior:'smooth'})"
+                    class="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/30 hover:scale-105 transition-all">
+                    Get Started Now
+                </button>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Form Section -->
-    <section id="lead-form" class="py-32 bg-white">
+    <!-- Lead Form Section -->
+    <section id="lead-form" class="py-24 bg-white dark:bg-slate-900/50">
         <div class="max-w-4xl mx-auto px-6">
-            <div class="bg-slate-50 rounded-[3rem] p-12 shadow-inner border border-slate-100">
-                <div class="text-center mb-12">
-                    <h2 class="text-4xl font-black text-slate-900 mb-4">Start your 14-day free trial</h2>
-                    <p class="text-slate-500">Fill in your restaurant details and we'll handle the rest.</p>
-                </div>
-
+            <div class="bg-slate-50 dark:bg-slate-800 rounded-3xl p-8 lg:p-12 shadow-inner">
                 <div id="form-container">
-                    <form onsubmit="handleFormSubmit(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2 space-y-2">
-                            <label class="text-xs font-black uppercase text-slate-400 ml-1">Restaurant Name</label>
-                            <input name="restaurant" required
-                                class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-primary outline-none transition-all font-medium"
-                                placeholder="E.g. Blue Lagoon Bistro">
+                    <div class="mb-8 text-center">
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Start your 14-day free trial
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400">Join thousands of restaurants today.</p>
+                    </div>
+                    <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Restaurant
+                                    Name</label>
+                                <input name="restaurant" required
+                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="e.g. The Grand Bistro" type="text" />
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email
+                                    Address</label>
+                                <input name="email" required
+                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="owner@restaurant.com" type="email" />
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Phone
+                                    Number</label>
+                                <input name="phone" required
+                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="+91 00000 00000" type="tel" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Business
+                                    Address</label>
+                                <textarea name="address" required
+                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+                                    placeholder="123 Food Street, City, Country" rows="3"></textarea>
+                            </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black uppercase text-slate-400 ml-1">Email Address</label>
-                            <input name="email" type="email" required
-                                class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-primary outline-none transition-all font-medium"
-                                placeholder="owner@store.com">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black uppercase text-slate-400 ml-1">Phone Number</label>
-                            <input name="phone" type="tel" required
-                                class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-primary outline-none transition-all font-medium"
-                                placeholder="+91 00000 00000">
-                        </div>
-                        <div class="md:col-span-2 space-y-2">
-                            <label class="text-xs font-black uppercase text-slate-400 ml-1">Store Address</label>
-                            <textarea name="address" required
-                                class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-primary outline-none transition-all font-medium"
-                                placeholder="City, State, Zip" rows="3"></textarea>
-                        </div>
-                        <div class="md:col-span-2 mt-4">
-                            <button id="form-submit-btn" type="submit"
-                                class="w-full py-5 bg-primary text-white font-black rounded-3xl shadow-xl shadow-primary/30 hover:bg-secondary transition-all text-lg">
-                                ACTIVATE FREE TRIAL
-                            </button>
-                        </div>
+                        <button id="form-submit-btn"
+                            class="w-full bg-primary text-white font-black py-5 rounded-xl shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-lg"
+                            type="submit">
+                            ACTIVATE FREE TRIAL
+                        </button>
                     </form>
                 </div>
             </div>
@@ -204,84 +135,63 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-20 bg-slate-900 text-white">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center">
-            <img src="https://menubanao.com/wp-content/uploads/2024/03/logo-menubanao.png"
-                class="w-12 h-12 grayscale invert mb-8">
-            <p class="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-8">© 2024 Menu Banao | Modern
-                Dining Solutions</p>
-            <div class="flex gap-8 text-slate-400 text-sm font-bold">
-                <a href="#" class="hover:text-primary transition-colors">Privacy</a>
-                <a href="#" class="hover:text-primary transition-colors">Terms</a>
-                <a href="#" class="hover:text-primary transition-colors">Contact</a>
-            </div>
+    <footer class="py-12 bg-slate-900 text-white text-center">
+        <p class="text-sm font-bold text-slate-500 mb-4 uppercase tracking-widest">© 2024 Menu Banao</p>
+        <div class="flex justify-center gap-8 text-slate-400 text-xs">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Support</a>
         </div>
     </footer>
 
     <script>
-        // --- AUTH CHECK ---
+        // --- Session Check ---
         async function checkSession() {
             if (!window.sbClient) return;
             try {
                 const { data: { session } } = await window.sbClient.auth.getSession();
                 if (session) {
-                    const loginBtn = document.getElementById('nav-login-btn');
-                    if (loginBtn) {
-                        loginBtn.innerText = 'Dashboard';
-                        loginBtn.href = '../Donero-Cafe/admin.html';
-                    }
+                    const btn = document.getElementById('nav-login-btn');
+                    if (btn) { btn.innerText = 'Dashboard'; btn.href = '../Donero-Cafe/admin.html'; }
                 }
-            } catch (e) { console.warn(e); }
+            } catch (e) { }
         }
         window.addEventListener('load', checkSession);
 
-        // --- FORM LOGIC ---
+        // --- Lead Form ---
         window.handleFormSubmit = async function (e) {
             e.preventDefault();
             const btn = document.getElementById('form-submit-btn');
             const container = document.getElementById('form-container');
-            const formData = new FormData(e.target);
-
+            const data = new FormData(e.target);
             const leadData = {
-                restaurant_name: formData.get('restaurant'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                address: formData.get('address')
+                restaurant_name: data.get('restaurant'),
+                email: data.get('email'),
+                phone: data.get('phone'),
+                address: data.get('address')
             };
 
             btn.disabled = true;
-            btn.innerText = "PROCESSING...";
+            btn.innerText = 'PROCESSING...';
 
             try {
                 const { error } = await window.sbClient.from('onboarding_leads').insert([leadData]);
                 if (error) throw error;
-
                 container.innerHTML = `
-                    <div class="text-center py-20 animate-pop">
-                        <div class="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <span class="material-symbols-outlined text-5xl">verified</span>
+                    <div class="text-center py-12 animate-pop">
+                        <div class="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span class="material-symbols-outlined text-4xl">check_circle</span>
                         </div>
-                        <h2 class="text-4xl font-black mb-4">Request Received!</h2>
-                        <p class="text-slate-500 max-w-lg mx-auto leading-relaxed">
-                            Thank you! Our digital menu experts will contact you at <b>${leadData.email}</b> within 24 hours to set up your store and begin your trial.
-                        </p>
+                        <h2 class="text-3xl font-black mb-4">Request Received!</h2>
+                        <p class="text-slate-500 dark:text-slate-400 max-w-lg mx-auto">We will contact you at <b>${leadData.email}</b> within 24 hours.</p>
                     </div>
                 `;
             } catch (err) {
-                alert("⚠️ Error: " + err.message);
+                alert("⚠️ " + err.message);
                 btn.disabled = false;
-                btn.innerText = "ACTIVATE FREE TRIAL";
+                btn.innerText = 'ACTIVATE FREE TRIAL';
             }
         };
-
-        // --- REVEAL ANIMATIONS ---
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
 
