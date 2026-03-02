@@ -15,6 +15,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+    <!-- Supabase SDK & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script id="tailwind-config">tailwind.config = {
             darkMode: "class",
             theme: {
@@ -503,33 +506,70 @@
             });
         });
 
+        // --- Supabase Integration ---
+        const sbClient = supabase.createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.KEY);
+
+        // --- Auth Check for Navigation ---
+        async function checkSession() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (session) {
+                const loginBtn = document.querySelector('a[href="login.html"]');
+                if (loginBtn) {
+                    loginBtn.innerHTML = 'Dashboard <span class="material-symbols-outlined text-sm">dashboard</span>';
+                    loginBtn.href = '../Donero-Cafe/admin.html';
+                    // Remove dropdown
+                    const dropdown = loginBtn.parentElement.querySelector('.group-hover\\:visible');
+                    if (dropdown) dropdown.remove();
+                }
+            }
+        }
+        window.addEventListener('load', checkSession);
+
         // --- Form Submission Logic ---
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('form-submit-btn');
             const container = document.getElementById('form-container');
+            const formData = new FormData(e.target);
+
+            const leadData = {
+                restaurant_name: formData.get('restaurant'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                address: formData.get('address')
+            };
 
             // Disable button and show loading
             btn.disabled = true;
             btn.innerHTML = '<span class="flex items-center justify-center gap-2">Processing... <span class="material-symbols-outlined animate-spin text-sm">sync</span></span>';
 
-            // Mock API call
-            setTimeout(() => {
+            try {
+                const { error } = await sbClient
+                    .from('onboarding_leads')
+                    .insert([leadData]);
+
+                if (error) throw error;
+
                 container.innerHTML = `
-                <div class="col-span-1 lg:col-span-2 text-center py-12 animate-pop">
-                    <div class="w-20 h-20 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-4xl">check_circle</span>
+                    <div class="col-span-1 lg:col-span-2 text-center py-12 animate-pop">
+                        <div class="w-20 h-20 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span class="material-symbols-outlined text-4xl">check_circle</span>
+                        </div>
+                        <h2 class="text-3xl lg:text-4xl font-black mb-4">Request Received!</h2>
+                        <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto">
+                            Thank you for reaching out. A digital menu specialist will contact you at your provided email within 24 hours to begin your 14-day free trial.
+                        </p>
+                        <button onclick="location.reload()" class="px-8 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl font-bold">
+                            Back to Top
+                        </button>
                     </div>
-                    <h2 class="text-3xl lg:text-4xl font-black mb-4">Request Received!</h2>
-                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto">
-                        Thank you for reaching out. A digital menu specialist will contact you at your provided email within 24 hours to begin your 14-day free trial.
-                    </p>
-                    <button onclick="location.reload()" class="px-8 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl font-bold">
-                        Back to Top
-                    </button>
-                </div>
-            `;
-            }, 2000);
+                `;
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting request: " + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Get Started Now';
+            }
         }
 
         // --- Scroll Reveal Animations ---

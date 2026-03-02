@@ -10,9 +10,9 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <!-- Supabase SDK & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -79,40 +79,42 @@
                         <p class="text-slate-500 dark:text-slate-400 mt-2">Enter your credentials to access your
                             account.</p>
                     </div>
-                    <form class="space-y-5">
+                    <form id="login-form" class="space-y-5">
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
                                 Address</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">mail</span>
-                                <input
+                                <input id="login-email"
                                     class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="name@company.com" type="email" />
+                                    placeholder="name@company.com" type="email" required />
                             </div>
                         </div>
                         <div class="space-y-2">
                             <div class="flex justify-between items-center px-1">
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
-                                <a class="text-xs font-semibold text-primary hover:underline" href="#">Forgot?</a>
+                                <button type="button" onclick="handleForgotPassword()"
+                                    class="text-xs font-semibold text-primary hover:underline">Forgot?</button>
                             </div>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
-                                <input
+                                <input id="login-password"
                                     class="w-full pl-10 pr-12 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="••••••••" type="password" />
+                                    placeholder="••••••••" type="password" required />
                                 <button
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                                    type="button">
+                                    type="button" onclick="togglePasswordVisibility('login-password')">
                                     <span class="material-symbols-outlined text-[20px]">visibility</span>
                                 </button>
                             </div>
                         </div>
-                        <button
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98]"
+                        <div id="login-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
+                        <button id="login-submit"
+                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                             type="submit">
-                            Sign In
+                            <span>Sign In</span>
                         </button>
                     </form>
                     <div class="relative my-8">
@@ -159,15 +161,15 @@
                         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
                         <p class="text-slate-500 dark:text-slate-400 mt-2">Join thousands of professionals today.</p>
                     </div>
-                    <form class="space-y-4">
+                    <form id="signup-form" class="space-y-4">
                         <div class="space-y-1.5">
                             <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">person</span>
-                                <input
+                                <input id="signup-name"
                                     class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="John Doe" type="text" />
+                                    placeholder="John Doe" type="text" required />
                             </div>
                         </div>
                         <div class="space-y-1.5">
@@ -176,9 +178,9 @@
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">mail</span>
-                                <input
+                                <input id="signup-email"
                                     class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="name@company.com" type="email" />
+                                    placeholder="name@company.com" type="email" required />
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
@@ -188,9 +190,9 @@
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
-                                    <input
+                                    <input id="signup-password"
                                         class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white text-xs"
-                                        placeholder="••••••••" type="password" />
+                                        placeholder="••••••••" type="password" required />
                                 </div>
                             </div>
                             <div class="space-y-1.5">
@@ -199,25 +201,26 @@
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock_reset</span>
-                                    <input
+                                    <input id="signup-confirm"
                                         class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white text-xs"
-                                        placeholder="••••••••" type="password" />
+                                        placeholder="••••••••" type="password" required />
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-start gap-2 py-2">
                             <input
                                 class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-                                id="terms" type="checkbox" />
+                                id="terms" type="checkbox" required />
                             <label class="text-xs text-slate-500 dark:text-slate-400 leading-normal" for="terms">
                                 I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and
                                 <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
                             </label>
                         </div>
-                        <button
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98]"
+                        <div id="signup-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
+                        <button id="signup-submit"
+                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                             type="submit">
-                            Create Account
+                            <span>Create Account</span>
                         </button>
                     </form>
                 </div>
@@ -233,26 +236,57 @@
         © 2024 Menu Banao. All rights reserved.
     </footer>
     <script>
+        // --- Supabase Integration Logic ---
+        const sbClient = supabase.createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.KEY);
+
         const loginTab = document.getElementById('login-tab');
         const signupTab = document.getElementById('signup-tab');
-        const loginForm = document.getElementById('login-form-container');
-        const signupForm = document.getElementById('signup-form-container');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const signupFormContainer = document.getElementById('signup-form-container');
+
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const loginSubmitBtn = document.getElementById('login-submit');
+        const signupSubmitBtn = document.getElementById('signup-submit');
 
         const updateTabs = () => {
             if (loginTab.checked) {
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
+                loginFormContainer.classList.remove('hidden');
+                signupFormContainer.classList.add('hidden');
             } else if (signupTab.checked) {
-                signupForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
+                signupFormContainer.classList.remove('hidden');
+                loginFormContainer.classList.add('hidden');
             }
         };
 
         loginTab.addEventListener('change', updateTabs);
         signupTab.addEventListener('change', updateTabs);
 
-        // Hash-based tab switching
-        window.addEventListener('load', () => {
+        // Utility: Toggle Password
+        window.togglePasswordVisibility = (id) => {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        };
+
+        // Utility: Set Loading
+        const setBtnLoading = (btn, isLoading, text) => {
+            btn.disabled = isLoading;
+            if (isLoading) {
+                btn.innerHTML = `<span>${text}...</span><span class="material-symbols-outlined animate-spin text-sm">sync</span>`;
+            } else {
+                btn.innerHTML = `<span>${text}</span>`;
+            }
+        };
+
+        // --- Auth Persistence Check ---
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (session) {
+                window.location.href = '../Donero-Cafe/admin.html';
+            }
+
             const hash = window.location.hash;
             if (hash === '#signup') {
                 signupTab.checked = true;
@@ -262,6 +296,87 @@
                 updateTabs();
             }
         });
+
+        // --- Handle Sign In ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            loginError.classList.add('hidden');
+            setBtnLoading(loginSubmitBtn, true, 'Signing In');
+
+            try {
+                const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                if (data.session) {
+                    sessionStorage.setItem('donero_admin_auth', 'true');
+                    window.location.href = '../Donero-Cafe/admin.html';
+                }
+            } catch (err) {
+                loginError.innerText = err.message;
+                loginError.classList.remove('hidden');
+                setBtnLoading(loginSubmitBtn, false, 'Sign In');
+            }
+        });
+
+        // --- Handle Sign Up ---
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const name = document.getElementById('signup-name').value;
+
+            signupError.classList.add('hidden');
+
+            if (password !== confirm) {
+                signupError.innerText = "Passwords do not match.";
+                signupError.classList.remove('hidden');
+                return;
+            }
+
+            setBtnLoading(signupSubmitBtn, true, 'Creating Account');
+
+            try {
+                const { data, error } = await sbClient.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                if (data.user && data.session) {
+                    alert('Signup successful! Redirecting...');
+                    sessionStorage.setItem('donero_admin_auth', 'true');
+                    window.location.href = '../Donero-Cafe/admin.html';
+                } else {
+                    alert('Please check your email for the confirmation link.');
+                    setBtnLoading(signupSubmitBtn, false, 'Create Account');
+                }
+            } catch (err) {
+                signupError.innerText = err.message;
+                signupError.classList.remove('hidden');
+                setBtnLoading(signupSubmitBtn, false, 'Create Account');
+            }
+        });
+
+        window.handleForgotPassword = async () => {
+            const email = document.getElementById('login-email').value;
+            if (!email) {
+                alert('Please enter your email address in the login form.');
+                return;
+            }
+            const { error } = await sbClient.auth.resetPasswordForEmail(email);
+            if (error) alert(error.message);
+            else alert('Reset link sent to your email.');
+        };
     </script>
 </body>
 
