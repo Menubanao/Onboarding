@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Build Version: 1.0.1 (Forcing UI Refresh) -->
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Authentication | Menu Banao</title>
+
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"
         rel="stylesheet" />
-    <!-- Build Version: 1.6 (Diagnostic Update) -->
-    <!-- Supabase CDN Link -->
+
+    <!-- Supabase Library & Config (Build v1.7) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Supabase Client Configuration -->
-    <script src="./supabaseClient.js?v=build_v1.6"></script>
+    <script src="./supabaseClient.js?v=build_v1.7"></script>
+
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -28,6 +30,7 @@
                     animation: {
                         'slide-down': 'slideDown 0.3s ease-out forwards',
                         'fadeIn': 'fadeIn 0.5s ease-out forwards',
+                        'spin-slow': 'spin 3s linear infinite',
                     },
                     keyframes: {
                         slideDown: {
@@ -43,575 +46,346 @@
             },
         };
     </script>
-    <title>Authentication | Modern Portal</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+        }
+    </style>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-950 font-['Inter'] min-h-screen flex flex-col transition-colors duration-300">
-    <!-- Build Indicator Overlay -->
-    <div id="debug-banner" class="fixed top-2 right-2 flex flex-col items-end gap-1 z-[9999]">
-        <span class="px-2 py-1 bg-slate-800 text-white text-[10px] rounded-lg font-mono opacity-50">Build: v1.6</span>
+<body class="bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col transition-colors duration-500">
+
+    <!-- Real-time Connectivity Monitor -->
+    <div id="debug-banner" class="fixed top-4 right-4 flex flex-col items-end gap-2 z-[9999]">
+        <span class="px-3 py-1 bg-slate-900/80 text-white text-[10px] rounded-full font-mono backdrop-blur-md">Build:
+            v1.7</span>
         <span id="conn-status"
-            class="px-2 py-1 bg-yellow-500 text-black text-[10px] rounded-lg font-mono shadow-lg transition-all duration-500">Connecting
-            🌐...</span>
-        <div id="network-hint"
-            class="hidden px-2 py-1 bg-red-100 text-red-600 text-[9px] rounded-lg font-bold border border-red-200">
-            Shields/Adblock detected!</div>
+            class="px-3 py-1 bg-yellow-500 text-black text-[10px] rounded-full font-bold shadow-lg transition-all duration-300">
+            CONNECTING...
+        </span>
     </div>
+
     <header class="p-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a class="flex items-center gap-2 group" href="index.html">
+            <a class="flex items-center gap-3 group" href="index.html">
                 <div
-                    class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-all shadow-sm">
                     <img src="https://menubanao.com/wp-content/uploads/2024/03/logo-menubanao.png" alt="logo"
-                        class="w-8 h-8 object-contain">
+                        class="w-9 h-9 object-contain">
                 </div>
                 <span
-                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Menu
+                    class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Menu
                     Banao</span>
             </a>
             <a href="https://wa.me/917307073285"
-                class="px-5 py-2 text-sm font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-full transition-all">
-                Need Help?
+                class="hidden sm:flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-slate-900 rounded-full hover:bg-slate-800 transition-all shadow-lg">
+                <span class="material-symbols-outlined text-sm">support_agent</span>
+                Support
             </a>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center px-4 py-12 relative overflow-hidden">
-        <!-- Abstract Background Shapes -->
-        <div class="absolute -top-[10%] -right-[5%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl -z-10"></div>
-        <div class="absolute -bottom-[10%] -left-[5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl -z-10">
+    <main class="flex-grow flex items-center justify-center px-4 py-8 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px] -z-10 animate-pulse">
         </div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] -z-10 animate-pulse"
+            style="animation-delay: 1s"></div>
 
         <div
-            class="w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 transition-all">
-            <div class="p-8">
-                <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-8">
-                    <label class="flex-1 cursor-pointer">
-                        <input class="sr-only peer" id="login-tab" name="auth-tab" type="radio" checked />
-                        <div
-                            class="py-2.5 text-center font-semibold text-slate-500 peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-primary peer-checked:shadow-sm rounded-xl transition-all">
-                            Login</div>
-                    </label>
-                    <label class="flex-1 cursor-pointer">
-                        <input class="sr-only peer" id="signup-tab" name="auth-tab" type="radio" />
-                        <div
-                            class="py-2.5 text-center font-semibold text-slate-500 peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-primary peer-checked:shadow-sm rounded-xl transition-all">
-                            Sign Up</div>
-                    </label>
+            class="w-full max-w-[460px] glass-card rounded-[2.5rem] shadow-2xl border border-white/20 dark:border-slate-800 overflow-hidden relative">
+
+            <div class="p-8 lg:p-10">
+                <!-- Tab Switcher -->
+                <div class="flex p-1.5 bg-slate-200/50 dark:bg-slate-800/50 rounded-2xl mb-10 transition-colors">
+                    <button id="tab-login"
+                        class="flex-1 py-3 text-sm font-bold rounded-xl transition-all bg-white dark:bg-slate-700 text-primary shadow-sm">Login</button>
+                    <button id="tab-signup"
+                        class="flex-1 py-3 text-sm font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700">Sign
+                        Up</button>
                 </div>
 
-                <div id="login-form-container">
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Welcome back</h1>
-                        <p class="text-slate-500 dark:text-slate-400">Secure sign-in with your email or phone.</p>
+                <!-- LOGIN SECTION -->
+                <div id="section-login" class="space-y-6">
+                    <div>
+                        <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Welcome Back
+                        </h1>
+                        <p class="text-slate-500 text-sm">Sign in with your email or phone to manage your menu.</p>
                     </div>
-                    <form id="login-form" class="space-y-5">
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email or
-                                Phone</label>
-                            <div class="relative">
+
+                    <form id="form-login" class="space-y-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-black uppercase text-slate-400 ml-1">Identifier</label>
+                            <div class="relative group">
                                 <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                <input id="login-email"
-                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your email or phone" type="text" required />
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">account_circle</span>
+                                <input id="input-login-id" type="text" required
+                                    class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium"
+                                    placeholder="Email or Phone number" />
                             </div>
                         </div>
 
-                        <!-- Login OTP View (Hidden initially) -->
-                        <div id="login-otp-view" class="space-y-2 hidden animate-slide-down">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
-                                Code</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
-                                <input id="login-otp"
-                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
-                                    placeholder="••••••" type="text" maxlength="6" />
-                            </div>
-                            <p class="text-[10px] text-slate-400 ml-1 italic">Enter the 6-digit code we sent you.</p>
-                        </div>
-
-                        <div id="login-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
-                        <button id="login-submit"
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
-                            type="submit">
-                            <span>Get OTP</span>
-                        </button>
-                    </form>
-                    <div class="relative my-8">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-slate-200 dark:border-slate-800"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-3 bg-white dark:bg-slate-900 text-slate-400">Or continue with</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button
-                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-medium">
-                            <img class="w-5 h-5" src="https://www.svgrepo.com/show/475656/google-color.svg"
-                                alt="Google">
-                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Google</span>
-                        </button>
-                        <button
-                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-medium">
-                            <img class="w-5 h-5 dark:invert"
-                                src="https://www.svgrepo.com/show/303108/apple-black-logo.svg" alt="Apple">
-                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Apple</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="hidden" id="signup-form-container">
-                    <div class="mb-6">
-                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-2">Join thousands of professionals today.</p>
-                    </div>
-                    <form id="signup-form" class="space-y-4">
-                        <div id="signup-identifier-view" class="space-y-4 transition-all">
+                        <!-- Login OTP UI -->
+                        <div id="view-login-otp" class="hidden space-y-4 animate-slide-down">
                             <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full
-                                    Name</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
-                                    <input id="signup-name"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your full name" type="text" required />
-                                </div>
-                            </div>
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
-                                    Address</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                    <input id="signup-email"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your email address" type="email" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sign Up OTP View (Hidden initially) -->
-                        <div id="signup-otp-view" class="space-y-4 hidden animate-slide-down">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                                <label class="text-xs font-black uppercase text-slate-400 ml-1">Verification
                                     Code</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
-                                    <input id="signup-otp"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
-                                        placeholder="••••••" type="text" maxlength="6" />
-                                </div>
-                                <p class="text-[10px] text-slate-400 ml-1 italic">Enter the code sent to your email.</p>
+                                <input id="input-login-otp" type="text" maxlength="6"
+                                    class="w-full py-4 bg-slate-50 dark:bg-slate-850 border-2 border-primary/30 rounded-2xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-black text-center text-2xl tracking-[0.8em]"
+                                    placeholder="000000" />
+                            </div>
+                            <p class="text-[10px] text-center text-slate-400 italic">Code sent! Please check your inbox.
+                            </p>
+                        </div>
+
+                        <div id="err-login"
+                            class="hidden text-xs text-red-500 bg-red-50 p-3 rounded-xl border border-red-100 font-bold">
+                        </div>
+
+                        <button id="btn-login-submit" type="submit"
+                            class="w-full py-4 bg-primary hover:bg-secondary text-white font-black rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-all flex items-center justify-center gap-3">
+                            <span>SEND OTP</span>
+                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- SIGNUP SECTION -->
+                <div id="section-signup" class="hidden space-y-6">
+                    <div>
+                        <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Join Us</h1>
+                        <p class="text-slate-500 text-sm">Create your store and start building your digital menu.</p>
+                    </div>
+
+                    <form id="form-signup" class="space-y-4">
+                        <div id="view-signup-init" class="space-y-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black uppercase text-slate-400 ml-1">Full Name</label>
+                                <input id="input-signup-name" type="text" required
+                                    class="w-full px-5 py-4 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium"
+                                    placeholder="John Doe" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black uppercase text-slate-400 ml-1">Email Address</label>
+                                <input id="input-signup-email" type="email" required
+                                    class="w-full px-5 py-4 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium"
+                                    placeholder="john@example.com" />
                             </div>
                         </div>
 
-                        <div class="flex items-start gap-2 py-2" id="signup-terms-view">
-                            <input
-                                class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-                                id="terms" type="checkbox" required />
-                            <label class="text-xs text-slate-500 dark:text-slate-400 leading-normal" for="terms">
-                                I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and
-                                <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
-                            </label>
+                        <!-- Signup OTP UI -->
+                        <div id="view-signup-otp" class="hidden space-y-4 animate-slide-down">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black uppercase text-slate-400 ml-1">OTP Code</label>
+                                <input id="input-signup-otp" type="text" maxlength="6"
+                                    class="w-full py-4 bg-slate-50 dark:bg-slate-850 border-2 border-primary/30 rounded-2xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-black text-center text-2xl tracking-[0.8em]"
+                                    placeholder="000000" />
+                            </div>
                         </div>
-                        <div id="signup-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
-                        <button id="signup-submit"
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
-                            type="submit">
-                            <span>Get Started</span>
+
+                        <div id="err-signup"
+                            class="hidden text-xs text-red-500 bg-red-50 p-3 rounded-xl border border-red-100 font-bold">
+                        </div>
+
+                        <button id="btn-signup-submit" type="submit"
+                            class="w-full py-4 bg-primary hover:bg-secondary text-white font-black rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-all flex items-center justify-center gap-3">
+                            <span>GET STARTED</span>
                         </button>
                     </form>
+                </div>
+
+                <div class="mt-8 flex items-center gap-4">
+                    <div class="h-px bg-slate-200 flex-grow"></div>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Social Connect</span>
+                    <div class="h-px bg-slate-200 flex-grow"></div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-2 gap-4 text-xs font-bold">
+                    <button
+                        class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4"> Google
+                    </button>
+                    <button
+                        class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                        <img src="https://www.svgrepo.com/show/303108/apple-black-logo.svg" class="w-4 h-4 dark:invert">
+                        Apple
+                    </button>
                 </div>
             </div>
-            <div class="px-8 pb-8 text-center">
-                <p class="text-slate-500 dark:text-slate-400 text-sm">
-                    By continuing, you agree to Menu Banao standard business terms and policies.
-                </p>
+
+            <div
+                class="bg-slate-50/50 dark:bg-slate-800/30 p-6 text-center border-t border-slate-100 dark:border-slate-800">
+                <p class="text-[11px] text-slate-400 font-medium">By accessing Menu Banao, you agree to our <a href="#"
+                        class="text-primary hover:underline">Terms & Privacy</a>.</p>
             </div>
         </div>
     </main>
-    <footer class="py-6 text-center text-slate-400 dark:text-slate-600 text-sm">
-        © 2024 Menu Banao. <span class="opacity-30">Build: v1.5</span>
+
+    <footer class="p-8 text-center">
+        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-loose">
+            © 2024 Menu Banao <br>
+            <span class="opacity-50 text-[9px]">Crafted for Modern Restaurants</span>
+        </p>
     </footer>
+
     <script>
-        // --- Core Logic (V1.5 Diagnostic Mode) ---
-        setTimeout(() => {
-            const statusEl = document.getElementById('conn-status');
-            if (window.sbClient) {
-                statusEl.innerText = "SUPABASE: CONNECTED ✅";
-                statusEl.classList.replace('bg-yellow-500', 'bg-green-600');
-                statusEl.classList.add('text-white');
-            } else {
-                statusEl.innerText = "SUPABASE: FAILED ❌";
-                statusEl.classList.replace('bg-yellow-500', 'bg-red-600');
-                statusEl.classList.add('text-white');
-            }
-        }, 1000);
+        // --- APP STATE ---
+        let authState = 'LOGIN'; // LOGIN or SIGNUP
+        let loginStep = 'ID';    // ID or OTP
+        let signupStep = 'INIT';  // INIT or OTP
 
-        const loginTab = document.getElementById('login-tab');
-        const signupTab = document.getElementById('signup-tab');
-        const loginFormContainer = document.getElementById('login-form-container');
-        const signupFormContainer = document.getElementById('signup-form-container');
-
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const loginError = document.getElementById('login-error');
-        const signupError = document.getElementById('signup-error');
-        const loginSubmitBtn = document.getElementById('login-submit');
-        const signupSubmitBtn = document.getElementById('signup-submit');
-
-        const updateTabs = () => {
-            if (loginTab.checked) {
-                loginFormContainer.classList.remove('hidden');
-                signupFormContainer.classList.add('hidden');
-            } else if (signupTab.checked) {
-                signupFormContainer.classList.remove('hidden');
-                loginFormContainer.classList.add('hidden');
-            }
+        const ui = {
+            tabLogin: document.getElementById('tab-login'),
+            tabSignup: document.getElementById('tab-signup'),
+            secLogin: document.getElementById('section-login'),
+            secSignup: document.getElementById('section-signup'),
+            formLogin: document.getElementById('form-login'),
+            formSignup: document.getElementById('form-signup'),
+            viewLoginOtp: document.getElementById('view-login-otp'),
+            viewSignupOtp: document.getElementById('view-signup-otp'),
+            viewSignupInit: document.getElementById('view-signup-init'),
+            btnLogin: document.getElementById('btn-login-submit'),
+            btnSignup: document.getElementById('btn-signup-submit'),
+            errLogin: document.getElementById('err-login'),
+            errSignup: document.getElementById('err-signup')
         };
 
-        loginTab.addEventListener('change', updateTabs);
-        signupTab.addEventListener('change', updateTabs);
-
-        // Utility: Set Loading
-        const setBtnLoading = (btn, isLoading, text) => {
-            btn.disabled = isLoading;
-            if (isLoading) {
-                btn.innerHTML = `<span>${text}...</span><span class="material-symbols-outlined animate-spin text-sm">sync</span>`;
-            } else {
-                btn.innerHTML = `<span>${text}</span>`;
-            }
+        // --- TAB SWITCHER ---
+        ui.tabLogin.onclick = () => {
+            authState = 'LOGIN';
+            ui.secLogin.classList.remove('hidden');
+            ui.secSignup.classList.add('hidden');
+            ui.tabLogin.className = "flex-1 py-3 text-sm font-bold rounded-xl transition-all bg-white dark:bg-slate-700 text-primary shadow-sm";
+            ui.tabSignup.className = "flex-1 py-3 text-sm font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700";
         };
 
-        // --- Auth Persistence & Hash Check ---
-        window.addEventListener('load', async () => {
-            if (window.location.protocol === 'file:') {
-                alert("STILL ON FILE:// - Please click 'Go Live' in VS Code or run 'npm run dev'");
-            }
+        ui.tabSignup.onclick = () => {
+            authState = 'SIGNUP';
+            ui.secSignup.classList.remove('hidden');
+            ui.secLogin.classList.add('hidden');
+            ui.tabSignup.className = "flex-1 py-3 text-sm font-bold rounded-xl transition-all bg-white dark:bg-slate-700 text-primary shadow-sm";
+            ui.tabLogin.className = "flex-1 py-3 text-sm font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700";
+        };
 
-            try {
-                const { data: { session } } = await window.sbClient.auth.getSession();
-                if (session) window.location.href = '../Donero-Cafe/admin.html';
-            } catch (e) { console.warn("Session check failed (Expected if offline)"); }
-
-            const hash = window.location.hash;
-            if (hash === '#signup') { signupTab.checked = true; updateTabs(); }
-            else if (hash === '#login') { loginTab.checked = true; updateTabs(); }
-        });
-
-        let loginFlow = 'IDENTIFIER'; // IDENTIFIER or OTP
-        let signupFlow = 'IDENTIFIER';
-
-        // --- Handle Sign In ---
-        loginForm.addEventListener('submit', async (e) => {
+        // --- AUTH LOGIC ---
+        ui.formLogin.onsubmit = async (e) => {
             e.preventDefault();
-            const identifier = document.getElementById('login-email').value;
-            const otpCode = document.getElementById('login-otp').value;
-            const loginOtpView = document.getElementById('login-otp-view');
+            const id = document.getElementById('input-login-id').value;
+            const code = document.getElementById('input-login-otp').value;
+            ui.errLogin.classList.add('hidden');
 
-            loginError.classList.add('hidden');
-
-            if (loginFlow === 'IDENTIFIER') {
-                setBtnLoading(loginSubmitBtn, true, 'Sending OTP');
+            if (loginStep === 'ID') {
+                updateBtn(ui.btnLogin, true, "SENDING...");
                 try {
-                    const isEmail = identifier.includes('@');
+                    const isEmail = id.includes('@');
                     const { error } = await window.sbClient.auth.signInWithOtp(
-                        isEmail ? { email: identifier } : { phone: identifier }
+                        isEmail ? { email: id } : { phone: id }
                     );
                     if (error) throw error;
 
-                    loginFlow = 'OTP';
-                    loginOtpView.classList.remove('hidden');
-                    document.getElementById('login-email').disabled = true;
-                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
-                } catch (err) {
-                    console.error("DEBUG:", err);
-                    loginError.innerText = "Error: " + (err.message || "Failed to reach database");
-                    loginError.classList.remove('hidden');
-                    setBtnLoading(loginSubmitBtn, false, 'Get OTP');
+                    loginStep = 'OTP';
+                    ui.viewLoginOtp.classList.remove('hidden');
+                    document.getElementById('input-login-id').disabled = true;
+                    updateBtn(ui.btnLogin, false, "VERIFY CODE");
+                } catch (e) {
+                    showErr(ui.errLogin, e.message);
+                    updateBtn(ui.btnLogin, false, "SEND OTP");
                 }
             } else {
-                setBtnLoading(loginSubmitBtn, true, 'Verifying');
+                updateBtn(ui.btnLogin, true, "VERIFYING...");
                 try {
-                    const isEmail = identifier.includes('@');
+                    const isEmail = id.includes('@');
                     const { data, error } = await window.sbClient.auth.verifyOtp({
-                        ...(isEmail ? { email: identifier } : { phone: identifier }),
-                        token: otpCode,
+                        ...(isEmail ? { email: id } : { phone: id }),
+                        token: code,
                         type: isEmail ? 'magiclink' : 'sms'
                     });
                     if (error) throw error;
-
-                    if (data.session) {
-                        sessionStorage.setItem('donero_admin_auth', 'true');
-                        window.location.href = '../Donero-Cafe/admin.html';
-                    }
-                } catch (err) {
-                    console.error(err);
-                    loginError.innerText = err.message;
-                    loginError.classList.remove('hidden');
-                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
+                    if (data.session) successRedirect();
+                } catch (e) {
+                    showErr(ui.errLogin, e.message);
+                    updateBtn(ui.btnLogin, false, "VERIFY CODE");
                 }
             }
-        });
+        };
 
-        // --- Handle Sign Up ---
-        signupForm.addEventListener('submit', async (e) => {
+        ui.formSignup.onsubmit = async (e) => {
             e.preventDefault();
-            const email = document.getElementById('signup-email').value;
-            const name = document.getElementById('signup-name').value;
-            const otpCode = document.getElementById('signup-otp').value;
-            const signupIdentifierView = document.getElementById('signup-identifier-view');
-            const signupOtpView = document.getElementById('signup-otp-view');
+            const name = document.getElementById('input-signup-name').value;
+            const email = document.getElementById('input-signup-email').value;
+            const code = document.getElementById('input-signup-otp').value;
+            ui.errSignup.classList.add('hidden');
 
-            signupError.classList.add('hidden');
-
-            if (signupFlow === 'IDENTIFIER') {
-                setBtnLoading(signupSubmitBtn, true, 'Preparing OTP');
+            if (signupStep === 'INIT') {
+                updateBtn(ui.btnSignup, true, "PREPARING...");
                 try {
-                    // NEW FLOW: Name + Email -> signInWithOtp
                     const { error } = await window.sbClient.auth.signInWithOtp({
                         email,
-                        options: {
-                            data: { full_name: name },
-                            shouldCreateUser: true
-                        }
+                        options: { data: { full_name: name }, shouldCreateUser: true }
                     });
-
                     if (error) throw error;
 
-                    signupFlow = 'OTP';
-                    signupIdentifierView.classList.add('hidden');
-                    signupOtpView.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
-                } catch (err) {
-                    console.error("DEBUG:", err);
-                    signupError.innerText = "Error: " + (err.message || "Failed to contact database");
-                    signupError.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Get Started');
+                    signupStep = 'OTP';
+                    ui.viewSignupInit.classList.add('hidden');
+                    ui.viewSignupOtp.classList.remove('hidden');
+                    updateBtn(ui.btnSignup, false, "FINISH SETUP");
+                } catch (e) {
+                    showErr(ui.errSignup, e.message);
+                    updateBtn(ui.btnSignup, false, "GET STARTED");
                 }
             } else {
-                setBtnLoading(signupSubmitBtn, true, 'Finalizing');
+                updateBtn(ui.btnSignup, true, "CREATING...");
                 try {
-                    const { data, error } = await window.sbClient.auth.verifyOtp({
-                        email,
-                        token: otpCode,
-                        type: 'signup'
+                    const { data: { user }, error } = await window.sbClient.auth.verifyOtp({
+                        email, token: code, type: 'signup'
                     });
-
                     if (error) throw error;
-
-                    if (data.user) {
-                        sessionStorage.setItem('donero_admin_auth', 'true');
-                        window.location.href = '../Donero-Cafe/admin.html';
-                    }
-                } catch (err) {
-                    console.error(err);
-                    signupError.innerText = err.message;
-                    signupError.classList.remove('hidden');
-                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
+                    if (user) successRedirect();
+                } catch (e) {
+                    showErr(ui.errSignup, e.message);
+                    updateBtn(ui.btnSignup, false, "FINISH SETUP");
                 }
             }
-        });
-
-        // Expose helper to window for HTML onclick
-        window.handleForgotPassword = async () => {
-            const email = document.getElementById('login-email').value;
-            if (!email) { alert('Enter email.'); return; }
-            const { error } = await window.sbClient.auth.resetPasswordForEmail(email);
-            if (error) alert(error.message);
-            else alert('Reset link sent!');
         };
+
+        // --- HELPERS ---
+        function updateBtn(btn, loading, text) {
+            btn.disabled = loading;
+            btn.children[0].innerText = text;
+        }
+
+        function showErr(el, msg) {
+            el.innerText = "⚠️ " + msg;
+            el.classList.remove('hidden');
+        }
+
+        function successRedirect() {
+            sessionStorage.setItem('donero_admin_auth', 'true');
+            window.location.href = '../Donero-Cafe/admin.html';
+        }
+
+        // --- INITIAL CHECK ---
+        window.addEventListener('load', async () => {
+            // Check for existing session
+            if (window.sbClient) {
+                const { data: { session } } = await window.sbClient.auth.getSession();
+                if (session) successRedirect();
+            }
+
+            // Check Hash
+            if (window.location.hash === '#signup') ui.tabSignup.click();
+        });
     </script>
-    class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 h-16
-    lg:px-10">
-    <a href="index.html" class="flex items-center">
-        <img src="logo.png" alt="MENU BANAO Logo"
-            class="h-32 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300" />
-    </a>
-    <button
-        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-colors">
-        <span class="truncate">Need Help?</span>
-    </button>
-    </header>
-    <main class="flex-1 flex items-center justify-center p-4">
-        <div
-            class="w-full max-w-[480px] bg-white dark:bg-slate-900 shadow-xl rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-            <div class="p-4 bg-slate-50 dark:bg-slate-800/50">
-                <div class="flex h-12 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 p-1">
-                    <label
-                        class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 group">
-                        <input checked="" class="peer hidden" id="login-tab" name="auth-toggle" type="radio" />
-                        <span
-                            class="text-sm font-semibold text-slate-500 dark:text-slate-400 peer-checked:bg-white dark:peer-checked:bg-slate-900 peer-checked:text-slate-900 dark:peer-checked:text-white peer-checked:shadow-sm w-full h-full flex items-center justify-center rounded-lg transition-all">Login</span>
-                    </label>
-                    <label
-                        class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 group">
-                        <input class="peer hidden" id="signup-tab" name="auth-toggle" type="radio" />
-                        <span
-                            class="text-sm font-semibold text-slate-500 dark:text-slate-400 peer-checked:bg-white dark:peer-checked:bg-slate-900 peer-checked:text-slate-900 dark:peer-checked:text-white peer-checked:shadow-sm w-full h-full flex items-center justify-center rounded-lg transition-all">Sign
-                            Up</span>
-                    </label>
-                </div>
-            </div>
-            <div class="p-8">
-                <div id="login-form-container">
-                    <div class="mb-8">
-                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome back</h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-2">Enter your credentials to access your
-                            account.</p>
-                    </div>
-                    <form id="login-form" class="space-y-5">
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email or
-                                Phone</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                <input id="login-email"
-                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your email or phone" type="text" required />
-                            </div>
-                        </div>
-
-                        <!-- Login OTP View (Hidden initially) -->
-                        <div id="login-otp-view" class="space-y-2 hidden animate-slide-down">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
-                                Code</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
-                                <input id="login-otp"
-                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
-                                    placeholder="••••••" type="text" maxlength="6" />
-                            </div>
-                            <p class="text-[10px] text-slate-400 ml-1 italic">Enter the 6-digit code we sent you.</p>
-                        </div>
-
-                        <div id="login-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
-                        <button id="login-submit"
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
-                            type="submit">
-                            <span>Get OTP</span>
-                        </button>
-                    </form>
-                    <div class="relative my-8">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-slate-200 dark:border-slate-800"></div>
-                        </div>
-                        <div class="relative flex justify-center text-xs uppercase">
-                            <span class="bg-white dark:bg-slate-900 px-4 text-slate-500 font-medium">Or continue
-                                with</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button
-                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                            <svg class="w-5 h-5" viewbox="0 0 24 24">
-                                <path
-                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                                    fill="#4285F4"></path>
-                                <path
-                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                                    fill="#34A853"></path>
-                                <path
-                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                                    fill="#FBBC05"></path>
-                                <path
-                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z"
-                                    fill="#EA4335"></path>
-                            </svg>
-                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Google</span>
-                        </button>
-                        <button
-                            class="flex items-center justify-center gap-2 py-2.5 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                            <svg class="w-5 h-5 fill-current text-slate-900 dark:text-white" viewbox="0 0 24 24">
-                                <path
-                                    d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.75 1.18-.02 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.13zM12.03 7.25c-.02-2.23 1.51-4.07 3.5-4.25.26 2.25-2.02 4.52-3.5 4.25z">
-                                </path>
-                            </svg>
-                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Apple</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="hidden" id="signup-form-container">
-                    <div class="mb-6">
-                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-2">Join thousands of professionals today.</p>
-                    </div>
-                    <form id="signup-form" class="space-y-4">
-                        <div id="signup-identifier-view" class="space-y-4 transition-all">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full
-                                    Name</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
-                                    <input id="signup-name"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your full name" type="text" required />
-                                </div>
-                            </div>
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
-                                    Address</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                    <input id="signup-email"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your email address" type="email" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sign Up OTP View (Hidden initially) -->
-                        <div id="signup-otp-view" class="space-y-4 hidden animate-slide-down">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
-                                    Code</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
-                                    <input id="signup-otp"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
-                                        placeholder="••••••" type="text" maxlength="6" />
-                                </div>
-                                <p class="text-[10px] text-slate-400 ml-1 italic">Enter the code sent to your email.</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 py-2" id="signup-terms-view">
-                            <input
-                                class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-                                id="terms" type="checkbox" required />
-                            <label class="text-xs text-slate-500 dark:text-slate-400 leading-normal" for="terms">
-                                I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and
-                                <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
-                            </label>
-                        </div>
-                        <div id="signup-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
-                        <button id="signup-submit"
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
-                            type="submit">
-                            <span>Get Started</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="px-8 pb-8 text-center">
-                <p class="text-slate-500 dark:text-slate-400 text-sm">
-                    By continuing, you agree to Menu Banao standard business terms and policies.
-                </p>
-            </div>
-        </div>
-    </main>
-    <footer class="py-6 text-center text-slate-400 dark:text-slate-600 text-sm">
-        © 2024 Menu Banao. <span class="opacity-30">Build: v1.4</span>
-    </footer>
 </body>
 
 </html>
