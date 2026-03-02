@@ -565,11 +565,20 @@
                     </div>
                 `;
             } catch (err) {
-                console.error(err);
-                alert("Error submitting request: " + err.message);
+                console.error("Submission Error:", err);
+                let msg = err.message;
+                if (msg === "Failed to fetch") {
+                    msg = "Connection Refused: Most browsers block database requests when opening local files directly (file://). Please use VS Code 'Live Server' (http://localhost:5500).";
+                }
+                alert("Error: " + msg);
                 btn.disabled = false;
                 btn.innerHTML = 'Get Started Now';
             }
+        }
+
+        // Protocol Check
+        if (window.location.protocol === 'file:') {
+            console.warn("WARNING: You are opening this page via file://. Form submissions and login will fail due to browser security. Please use a local server.");
         }
 
         // --- Scroll Reveal Animations ---
