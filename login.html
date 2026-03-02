@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
 <html lang="en">
+<!-- Build Version: 1.0.1 (Forcing UI Refresh) -->
 
 <head>
     <meta charset="utf-8" />
@@ -84,42 +84,36 @@
                     </div>
                     <form id="login-form" class="space-y-5">
                         <div class="space-y-2">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
-                                Address</label>
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email or
+                                Phone</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
                                 <input id="login-email"
                                     class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your email address" type="email" required />
+                                    placeholder="Enter your email or phone" type="text" required />
                             </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center px-1">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
-                                <button type="button" onclick="handleForgotPassword()"
-                                    class="text-xs font-semibold text-primary hover:underline">Forgot?</button>
-                            </div>
+                        <!-- Login OTP View (Hidden initially) -->
+                        <div id="login-otp-view" class="space-y-2 hidden animate-slide-down">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                                Code</label>
                             <div class="relative">
                                 <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">lock</span>
-                                <input id="login-password"
-                                    class="w-full pl-10 pr-12 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your password" type="password" required />
-                                <button
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                                    type="button" onclick="togglePasswordVisibility('login-password')">
-                                    <span class="material-symbols-outlined text-[20px]">visibility</span>
-                                </button>
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
+                                <input id="login-otp"
+                                    class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
+                                    placeholder="••••••" type="text" maxlength="6" />
                             </div>
+                            <p class="text-[10px] text-slate-400 ml-1 italic">Enter the 6-digit code we sent you.</p>
                         </div>
 
                         <div id="login-error" class="hidden text-xs text-red-500 font-medium ml-1"></div>
                         <button id="login-submit"
                             class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                             type="submit">
-                            <span>Sign In</span>
+                            <span>Get OTP</span>
                         </button>
                     </form>
                     <div class="relative my-8">
@@ -167,54 +161,48 @@
                         <p class="text-slate-500 dark:text-slate-400 mt-2">Join thousands of professionals today.</p>
                     </div>
                     <form id="signup-form" class="space-y-4">
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
-                                <input id="signup-name"
-                                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your full name" type="text" required />
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
-                                Address</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                <input id="signup-email"
-                                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                    placeholder="Enter your email address" type="email" required />
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
+                        <div id="signup-identifier-view" class="space-y-4 transition-all">
                             <div class="space-y-1.5">
-                                <label
-                                    class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Password</label>
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full
+                                    Name</label>
                                 <div class="relative">
                                     <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">lock</span>
-                                    <input id="signup-password"
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
+                                    <input id="signup-name"
                                         class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Create password" type="password" required />
+                                        placeholder="Enter your full name" type="text" required />
                                 </div>
                             </div>
                             <div class="space-y-1.5">
-                                <label
-                                    class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Confirm</label>
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
+                                    Address</label>
                                 <div class="relative">
                                     <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">lock_reset</span>
-                                    <input id="signup-confirm"
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
+                                    <input id="signup-email"
                                         class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Repeat password" type="password" required />
+                                        placeholder="Enter your email address" type="email" required />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start gap-2 py-2">
+                        <!-- Sign Up OTP View (Hidden initially) -->
+                        <div id="signup-otp-view" class="space-y-4 hidden animate-slide-down">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                                    Code</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
+                                    <input id="signup-otp"
+                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
+                                        placeholder="••••••" type="text" maxlength="6" />
+                                </div>
+                                <p class="text-[10px] text-slate-400 ml-1 italic">Enter the code sent to your email.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2 py-2" id="signup-terms-view">
                             <input
                                 class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
                                 id="terms" type="checkbox" required />
@@ -227,7 +215,7 @@
                         <button id="signup-submit"
                             class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                             type="submit">
-                            <span>Create Account</span>
+                            <span>Get Started</span>
                         </button>
                     </form>
                 </div>
@@ -271,19 +259,7 @@
         loginTab.addEventListener('change', updateTabs);
         signupTab.addEventListener('change', updateTabs);
 
-        // Utility: Toggle Password
-        window.togglePasswordVisibility = (id) => {
-            const input = document.getElementById(id);
-            const icon = input.nextElementSibling.querySelector('.material-symbols-outlined');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.textContent = 'visibility_off';
-            } else {
-                input.type = 'password';
-                icon.textContent = 'visibility';
-            }
-        };
-
+        // Utility: Toggle Password - REMOVED as passwords are no longer used for login/signup
         // Utility: Set Loading
         const setBtnLoading = (btn, isLoading, text) => {
             btn.disabled = isLoading;
@@ -298,7 +274,14 @@
         window.addEventListener('load', async () => {
             // protocol check
             if (window.location.protocol === 'file:') {
-                console.warn("WARNING: Running on file:// protocol. Supabase Auth will fail. Please use a local server like Live Server.");
+                console.warn("WARNING: Running on file:// protocol. Supabase Auth will fail.");
+                const warning = document.createElement('div');
+                warning.innerHTML = `
+                    <div style="position:fixed;top:0;left:0;width:100%;background:#ef4444;color:white;padding:10px;text-align:center;z-index:9999;font-weight:bold;font-family:sans-serif;">
+                        ⚠️ ERROR: You are opening this via file://. Please use Vite (npm run dev) or Live Server (Port 5500).
+                    </div>
+                `;
+                document.body.prepend(warning);
             }
 
             const { data: { session } } = await window.sbClient.auth.getSession();
@@ -316,33 +299,61 @@
             }
         });
 
+        let loginFlow = 'IDENTIFIER'; // IDENTIFIER or OTP
+        let signupFlow = 'IDENTIFIER';
+
         // --- Handle Sign In ---
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            const identifier = document.getElementById('login-email').value;
+            const otpCode = document.getElementById('login-otp').value;
+            const loginOtpView = document.getElementById('login-otp-view');
 
             loginError.classList.add('hidden');
-            setBtnLoading(loginSubmitBtn, true, 'Signing In');
 
-            try {
-                // FOLLOWING STEP 5 GUIDE
-                const { data, error } = await window.sbClient.auth.signInWithPassword({ email, password });
-                if (error) throw error;
+            if (loginFlow === 'IDENTIFIER') {
+                setBtnLoading(loginSubmitBtn, true, 'Sending OTP');
+                try {
+                    const isEmail = identifier.includes('@');
+                    const { error } = await window.sbClient.auth.signInWithOtp(
+                        isEmail ? { email: identifier } : { phone: identifier }
+                    );
+                    if (error) throw error;
 
-                if (data.session) {
-                    sessionStorage.setItem('donero_admin_auth', 'true');
-                    window.location.href = '../Donero-Cafe/admin.html';
+                    loginFlow = 'OTP';
+                    loginOtpView.classList.remove('hidden');
+                    document.getElementById('login-email').disabled = true;
+                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
+                } catch (err) {
+                    console.error("Supabase Error Context:", err);
+                    console.dir(err);
+                    loginError.innerText = err.message === "Failed to fetch"
+                        ? "Connection Blocked: 1. Disable Brave Shields/Ad-blockers. 2. Check internet."
+                        : err.message;
+                    loginError.classList.remove('hidden');
+                    setBtnLoading(loginSubmitBtn, false, 'Get OTP');
                 }
-            } catch (err) {
-                console.error("Supabase Error:", err);
-                let msg = err.message;
-                if (msg === "Failed to fetch") {
-                    msg = "Connection Blocked: Please use VS Code 'Live Server' (http://localhost:5500).";
+            } else {
+                setBtnLoading(loginSubmitBtn, true, 'Verifying');
+                try {
+                    const isEmail = identifier.includes('@');
+                    const { data, error } = await window.sbClient.auth.verifyOtp({
+                        ...(isEmail ? { email: identifier } : { phone: identifier }),
+                        token: otpCode,
+                        type: isEmail ? 'magiclink' : 'sms'
+                    });
+                    if (error) throw error;
+
+                    if (data.session) {
+                        sessionStorage.setItem('donero_admin_auth', 'true');
+                        window.location.href = '../Donero-Cafe/admin.html';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    loginError.innerText = err.message;
+                    loginError.classList.remove('hidden');
+                    setBtnLoading(loginSubmitBtn, false, 'Verify Code');
                 }
-                loginError.innerText = msg;
-                loginError.classList.remove('hidden');
-                setBtnLoading(loginSubmitBtn, false, 'Sign In');
             }
         });
 
@@ -350,51 +361,62 @@
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('signup-confirm').value;
             const name = document.getElementById('signup-name').value;
+            const otpCode = document.getElementById('signup-otp').value;
+            const signupIdentifierView = document.getElementById('signup-identifier-view');
+            const signupOtpView = document.getElementById('signup-otp-view');
 
             signupError.classList.add('hidden');
 
-            if (password !== confirm) {
-                signupError.innerText = "Passwords do not match.";
-                signupError.classList.remove('hidden');
-                return;
-            }
-
-            setBtnLoading(signupSubmitBtn, true, 'Creating Account');
-
-            try {
-                // FOLLOWING STEP 4 GUIDE
-                const { data, error } = await window.sbClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            full_name: name
+            if (signupFlow === 'IDENTIFIER') {
+                setBtnLoading(signupSubmitBtn, true, 'Preparing OTP');
+                try {
+                    // NEW FLOW: Name + Email -> signInWithOtp
+                    const { error } = await window.sbClient.auth.signInWithOtp({
+                        email,
+                        options: {
+                            data: { full_name: name },
+                            shouldCreateUser: true
                         }
+                    });
+
+                    if (error) throw error;
+
+                    signupFlow = 'OTP';
+                    signupIdentifierView.classList.add('hidden');
+                    signupOtpView.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
+                } catch (err) {
+                    console.error("Supabase Error Context:", err);
+                    console.dir(err);
+                    signupError.innerText = err.message === "Failed to fetch"
+                        ? "Connection Blocked: 1. Disable Brave Shields/Ad-blockers. 2. Verify Supabase URL."
+                        : err.message;
+                    signupError.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Get Started');
+                }
+            } else {
+                setBtnLoading(signupSubmitBtn, true, 'Finalizing');
+                try {
+                    const { data, error } = await window.sbClient.auth.verifyOtp({
+                        email,
+                        token: otpCode,
+                        type: 'signup'
+                    });
+
+                    if (error) throw error;
+
+                    if (data.user) {
+                        alert('Account verified! Redirecting to Dashboard...');
+                        sessionStorage.setItem('donero_admin_auth', 'true');
+                        window.location.href = '../Donero-Cafe/admin.html';
                     }
-                });
-
-                if (error) throw error;
-
-                if (data.user && data.session) {
-                    alert('Signup successful! Redirecting...');
-                    sessionStorage.setItem('donero_admin_auth', 'true');
-                    window.location.href = '../Donero-Cafe/admin.html';
-                } else {
-                    alert('Account created! Please check your email for a confirmation link.');
-                    setBtnLoading(signupSubmitBtn, false, 'Create Account');
+                } catch (err) {
+                    console.error(err);
+                    signupError.innerText = err.message;
+                    signupError.classList.remove('hidden');
+                    setBtnLoading(signupSubmitBtn, false, 'Verify & Finish');
                 }
-            } catch (err) {
-                console.error("Supabase Error:", err);
-                let msg = err.message;
-                if (msg === "Failed to fetch") {
-                    msg = "Connection Blocked: Please use VS Code 'Live Server' (http://localhost:5500).";
-                }
-                signupError.innerText = msg;
-                signupError.classList.remove('hidden');
-                setBtnLoading(signupSubmitBtn, false, 'Create Account');
             }
         });
 

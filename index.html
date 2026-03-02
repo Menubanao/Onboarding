@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
+<!-- Build Version: 1.0.1 (Forcing UI Refresh) -->
 
 <head>
     <meta charset="utf-8" />
@@ -513,7 +514,7 @@
 
         // --- Auth Check for Navigation ---
         async function checkSession() {
-            const { data: { session } } = await sbClient.auth.getSession();
+            const { data: { session } } = await window.sbClient.auth.getSession();
             if (session) {
                 const loginBtn = document.querySelector('a[href="login.html"]');
                 if (loginBtn) {
@@ -546,7 +547,7 @@
             btn.innerHTML = '<span class="flex items-center justify-center gap-2">Processing... <span class="material-symbols-outlined animate-spin text-sm">sync</span></span>';
 
             try {
-                const { error } = await sbClient
+                const { error } = await window.sbClient
                     .from('onboarding_leads')
                     .insert([leadData]);
 
@@ -570,9 +571,9 @@
                 console.error("Submission Error:", err);
                 let msg = err.message;
                 if (msg === "Failed to fetch") {
-                    msg = "Connection Refused: Most browsers block database requests when opening local files directly (file://). Please use VS Code 'Live Server' (http://localhost:5500).";
+                    msg = "Database Connection Blocked. 1. Are you running on Vite Port 5500? 2. Is Brave Shields ON? (Turn it off) 3. Are you offline?";
                 }
-                alert("Error: " + msg);
+                alert("⚠️ Error: " + msg);
                 btn.disabled = false;
                 btn.innerHTML = 'Get Started Now';
             }
