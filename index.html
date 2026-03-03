@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -6,193 +7,622 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>MENU BANAO - Digital QR Menu Builder</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabaseClient.js"></script>
-
-    <script id="tailwind-config">
-        tailwind.config = {
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#f97316",
-                        secondary: "#ea580c",
+                        "primary": "#f49d25",
+                        "secondary": "#0071bc",
                         "background-light": "#f8f7f5",
                         "background-dark": "#1a1612",
                     },
                     fontFamily: {
                         "display": ["Inter", "sans-serif"]
                     },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
                 },
             },
-        }
-    </script>
+        }</script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
+        }
+
+        .hero-gradient {
+            background:
+                radial-gradient(circle at 0% 0%, rgba(244, 157, 37, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 100% 0%, rgba(0, 113, 188, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(244, 157, 37, 0.05) 0%, transparent 50%);
+        }
+
+        .bg-blob {
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #f49d25;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .fixed-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('banner.png');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            mix-blend-mode: multiply;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .dark .fixed-banner {
+            mix-blend-mode: screen;
+            opacity: 0.15;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
         }
     </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
-    <div class="max-w-7xl mx-auto px-6">
-        <nav class="flex justify-between items-center h-20">
-            <div class="flex items-center gap-2">
-                <img src="logo.png" alt="MENU BANAO" class="h-20 w-auto">
-                <span class="text-xl font-bold">Menu Banao</span>
+    <div class="fixed-banner"></div>
+    <div class="relative z-10">
+        <!-- Navigation -->
+        <nav
+            class="sticky top-0 z-50 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 shadow-xl shadow-primary/10">
+            <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center gap-0">
+                        <img src="logo.png" alt="MENU BANAO Logo"
+                            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                            class="h-32 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300 cursor-pointer"
+                            data-alt="MENU BANAO brand logo">
+                    </div>
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a class="nav-link text-sm font-medium hover:text-primary transition-all hover:-translate-y-0.5"
+                            href="#features">Features</a>
+                        <a class="nav-link text-sm font-medium hover:text-primary transition-all hover:-translate-y-0.5"
+                            href="#how-it-works">How it
+                            Works</a>
+
+                        <!-- Login Dropdown -->
+                        <div class="relative group">
+                            <a href="login.html"
+                                class="bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 active:scale-95 transition-all duration-300 flex items-center gap-2">
+                                Login
+                                <span
+                                    class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-300">expand_more</span>
+                            </a>
+                            <div
+                                class="absolute right-0 mt-2 w-56 invisible opacity-0 translate-y-2 scale-95 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-200">
+                                <div
+                                    class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden py-1">
+                                    <a href="login.html#login"
+                                        class="block px-4 py-3 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors border-b border-slate-50 dark:border-slate-700/50">
+                                        <div class="font-bold">Sign In</div>
+                                        <div class="text-[10px] text-slate-400 uppercase tracking-tight">Existing User
+                                        </div>
+                                    </a>
+                                    <a href="login.html#signup"
+                                        class="block px-4 py-3 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">
+                                        <div class="font-bold">Sign Up</div>
+                                        <div class="text-[10px] text-slate-400 uppercase tracking-tight">New User</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})"
+                            class="bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 active:scale-95 transition-all duration-300">
+                            Get Started
+                        </button>
+                    </div>
+                    <!-- Mobile Menu Button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 dark:text-slate-400 p-2">
+                            <span id="menu-icon" class="material-symbols-outlined text-3xl">menu</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="hidden md:flex items-center space-x-8">
-                <a class="text-sm font-medium hover:text-primary transition-all" href="#features">Features</a>
-                <a class="text-sm font-medium hover:text-primary transition-all" href="#how-it-works">How it Works</a>
-                <a href="login.html" id="nav-login-btn"
-                    class="bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                    Login
-                </a>
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu"
+                class="hidden md:hidden absolute top-16 left-0 w-full bg-background-light dark:bg-background-dark border-b border-primary/10 animate-slide-down">
+                <div class="px-4 py-6 space-y-4">
+                    <a onclick="toggleMobileMenu()" class="block text-lg font-bold hover:text-primary transition-colors"
+                        href="#features">Features</a>
+                    <a onclick="toggleMobileMenu()" class="block text-lg font-bold hover:text-primary transition-colors"
+                        href="#how-it-works">How it Works</a>
+                    <button
+                        onclick="toggleMobileMenu(); document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})"
+                        class="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg">
+                        Get Started Now
+                    </button>
+                    <div class="pt-4 border-t border-primary/10 grid grid-cols-2 gap-4">
+                        <a onclick="toggleMobileMenu()" href="login.html#login"
+                            class="text-center py-3 rounded-lg bg-slate-100 dark:bg-slate-800 font-bold text-sm">Sign
+                            In</a>
+                        <a onclick="toggleMobileMenu()" href="login.html#signup"
+                            class="text-center py-3 rounded-lg bg-primary/10 text-primary font-bold text-sm">Sign Up</a>
+                    </div>
+                </div>
             </div>
         </nav>
-    </div>
 
-    <!-- Hero Section -->
-    <header class="py-20 lg:py-32 bg-gradient-to-b from-white to-primary/5 dark:from-background-dark dark:to-primary/5">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h1 class="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white mb-6">
-                Turn Your <span class="text-primary">Menu</span> into a <br> <span class="text-primary">Digital</span>
-                Experience
-            </h1>
-            <p class="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
-                Create QR-code menus that are mobile-friendly and easy to update. Attract more customers with a premium
-                digital experience.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="document.getElementById('lead-form').scrollIntoView({behavior:'smooth'})"
-                    class="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/30 hover:scale-105 transition-all">
-                    Get Started Now
-                </button>
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden hero-gradient pt-16 pb-24 lg:pt-32 lg:pb-40">
+            <div
+                class="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full bg-blob -translate-x-1/2 -translate-y-1/2">
             </div>
-        </div>
-    </header>
-
-    <!-- Lead Form Section -->
-    <section id="lead-form" class="py-24 bg-white dark:bg-slate-900/50">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="bg-slate-50 dark:bg-slate-800 rounded-3xl p-8 lg:p-12 shadow-inner">
-                <div id="form-container">
-                    <div class="mb-8 text-center">
-                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">Start your 14-day free trial
-                        </h2>
-                        <p class="text-slate-600 dark:text-slate-400">Join thousands of restaurants today.</p>
+            <div
+                class="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full bg-blob translate-x-1/2 translate-y-1/2">
+            </div>
+            <div class="max-w-7xl mx-auto px-4 @container">
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="flex-1 text-center lg:text-left reveal">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                            <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                            Join 10+ Restaurants
+                        </div>
+                        <h1
+                            class="text-5xl lg:text-7xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-100 mb-6">
+                            Turn Your <span class="text-primary">Menu</span> into a <span
+                                class="text-primary">Digital</span> Experience
+                        </h1>
+                        <p
+                            class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto lg:mx-0">
+                            Create QR-code menus that are mobile-friendly and easy to update. Attract more customers
+                            with a
+                            premium digital experience.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                            <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})"
+                                class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-orange-400 text-white font-bold text-lg rounded-xl shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all transform hover:-translate-y-1">
+                                Create Your Digital Menu
+                            </button>
+                            <button
+                                class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold text-lg rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition-all">
+                                View Demo
+                            </button>
+                        </div>
                     </div>
-                    <form onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="md:col-span-2">
+                    <div class="flex-1 w-full max-w-xl reveal">
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-primary to-orange-300 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                            </div>
+                            <div class="relative bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-2xl">
+                                <div
+                                    class="bg-slate-100 dark:bg-slate-900 rounded-xl aspect-[4/5] flex items-center justify-center overflow-hidden">
+                                    <img src="resturant image.png" alt="Restaurant interior"
+                                        class="w-full h-full object-cover"
+                                        data-alt="Modern restaurant interior with customers using mobile phones" />
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent flex flex-col justify-end p-8 text-white">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="p-3 bg-white rounded-lg">
+                                                <span
+                                                    class="material-symbols-outlined text-slate-900 text-3xl">qr_code_2</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-lg leading-tight">Instant QR Access</p>
+                                                <p class="text-sm opacity-80">Scan. Order. Enjoy.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-24 bg-white/70 dark:bg-slate-900/40 backdrop-blur-sm" id="features">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-primary font-bold tracking-widest uppercase text-sm mb-3">Premium Features</h2>
+                    <h3 class="text-3xl lg:text-5xl font-extrabold text-slate-900 dark:text-slate-100">Designed for
+                        modern
+                        hospitality</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Card 1 -->
+                    <div
+                        class="reveal group p-8 rounded-2xl bg-background-light dark:bg-background-dark border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all bg-primary/5 border-t-4 border-t-primary">
+                        <div
+                            class="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">qr_code</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">QR Code Menu</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Give your customers
+                            instant
+                            access to your full menu with a simple, high-res QR code scan.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div
+                        class="reveal delay-100 group p-8 rounded-2xl bg-background-light dark:bg-background-dark border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all bg-secondary/5 border-t-4 border-t-secondary">
+                        <div
+                            class="w-14 h-14 bg-secondary/20 rounded-xl flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">cloud_sync</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Easy Updates</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Change prices, add daily
+                            specials, or mark items as sold out instantly from any device.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div
+                        class="reveal delay-200 group p-8 rounded-2xl bg-background-light dark:bg-background-dark border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all bg-primary/5 border-t-4 border-t-primary">
+                        <div
+                            class="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">smartphone</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Mobile Optimized</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Perfect viewing on every
+                            screen size. Fast loading and beautiful visuals for your dishes.</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div
+                        class="reveal delay-300 group p-8 rounded-2xl bg-background-light dark:bg-background-dark border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all bg-secondary/5 border-t-4 border-t-secondary">
+                        <div
+                            class="w-14 h-14 bg-secondary/20 rounded-xl flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">sell</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Affordable Pricing</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Professional tools at a
+                            fair
+                            price. Scale your restaurant business without breaking the bank.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section
+            class="py-24 bg-background-light/60 dark:bg-background-dark/60 bg-gradient-to-b from-white/40 to-primary/5 dark:from-slate-900/30 dark:to-primary/5 backdrop-blur-sm"
+            id="how-it-works">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-3xl lg:text-4xl font-extrabold mb-4">Launch in 3 Simple Steps</h3>
+                    <p class="text-slate-600 dark:text-slate-400">Get your up and running today.</p>
+                </div>
+                <div class="relative flex flex-col md:flex-row gap-12 items-start justify-between">
+                    <!-- Line background -->
+                    <div class="hidden md:block absolute top-24 left-0 w-full h-0.5 bg-primary/10 -z-10"></div>
+                    <div class="flex-1 flex flex-col items-center text-center group reveal">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary text-slate-900 flex items-center justify-center text-2xl font-black mb-6 shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform">
+                            1</div>
+                        <h5 class="text-xl font-bold mb-2">Create</h5>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Add your dishes, descriptions, and
+                            high-quality photos to your menu dashboard.</p>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center text-center group reveal delay-100">
+                        <div
+                            class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-orange-400 text-white flex items-center justify-center text-3xl font-black mb-6 shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform">
+                            2</div>
+                        <h5 class="text-xl font-bold mb-2">Customize</h5>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Upload your logo and choose brand colors
+                            that
+                            match your restaurant's unique identity.</p>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center text-center group reveal delay-200">
+                        <div
+                            class="w-20 h-20 rounded-full bg-gradient-to-br from-secondary to-blue-400 text-white flex items-center justify-center text-3xl font-black mb-6 shadow-xl shadow-secondary/30 group-hover:scale-110 transition-transform">
+                            3</div>
+                        <h5 class="text-xl font-bold mb-2">Go Live</h5>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Download your custom QR code, print it on
+                            table tent cards, and start serving.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lead Form Section -->
+        <section id="lead-form" class="py-24 bg-white dark:bg-slate-900/50">
+            <div class="max-w-5xl mx-auto px-4">
+                <div
+                    class="bg-background-light dark:bg-background-dark rounded-3xl p-8 lg:p-12 shadow-2xl border border-primary/5">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12" id="form-container">
+                        <div class="reveal">
+                            <h2 class="text-3xl lg:text-4xl font-black mb-6 leading-tight">Ready to modernize your
+                                restaurant?</h2>
+                            <p class="text-slate-600 dark:text-slate-400 mb-8">Fill out the details to create your
+                                restaurant's digital presence. Our team will help you set up everything in under 24
+                                hours.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                                    <span class="text-sm font-medium">Free 14-day trial</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                                    <span class="text-sm font-medium">No credit card required</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                                    <span class="text-sm font-medium">24/7 Priority Support</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="space-y-4 reveal" onsubmit="handleFormSubmit(event)">
+                            <div>
                                 <label
                                     class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Restaurant
                                     Name</label>
                                 <input name="restaurant" required
-                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
+                                    class="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                                     placeholder="e.g. The Grand Bistro" type="text" />
                             </div>
-                            <div>
-                                <label
-                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email
-                                    Address</label>
-                                <input name="email" required
-                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
-                                    placeholder="owner@restaurant.com" type="email" />
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email
+                                        Address</label>
+                                    <input name="email" required
+                                        class="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                                        placeholder="owner@restaurant.com" type="email" />
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Phone
+                                        Number</label>
+                                    <input name="phone" required
+                                        class="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                                        placeholder="+91 (555) 000-0000" type="tel" />
+                                </div>
                             </div>
                             <div>
-                                <label
-                                    class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Phone
-                                    Number</label>
-                                <input name="phone" required
-                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
-                                    placeholder="+91 00000 00000" type="tel" />
-                            </div>
-                            <div class="md:col-span-2">
                                 <label
                                     class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Business
                                     Address</label>
                                 <textarea name="address" required
-                                    class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none"
-                                    placeholder="123 Food Street, City, Country" rows="3"></textarea>
+                                    class="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                                    placeholder="123 Food Street, City, Country" rows="2"></textarea>
                             </div>
-                        </div>
-                        <button id="form-submit-btn"
-                            class="w-full bg-primary text-white font-black py-5 rounded-xl shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-lg"
-                            type="submit">
-                            ACTIVATE FREE TRIAL
-                        </button>
-                    </form>
+                            <button id="form-submit-btn"
+                                class="w-full bg-gradient-to-r from-primary to-orange-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-95 transition-all"
+                                type="submit">
+                                Get Started Now
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="py-12 bg-slate-900 text-white text-center">
-        <p class="text-sm font-bold text-slate-500 mb-4 uppercase tracking-widest">© 2024 Menu Banao</p>
-        <div class="flex justify-center gap-8 text-slate-400 text-xs">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Support</a>
-        </div>
-    </footer>
+        <!-- Footer -->
+        <footer
+            class="bg-background-light/80 dark:bg-background-dark/80 py-12 border-t border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-2">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                        <div class="flex items-center gap-2 mb-2">
+                            <img src="logo.png" alt="MENU BANAO Logo"
+                                onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                                class="h-24 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                data-alt="MENU BANAO brand logo">
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 max-w-xs text-sm">
+                            Empowering restaurants with digital innovation. Modern solutions for the future of dining.
+                        </p>
+                    </div>
+                    <div class="flex gap-6">
+                        <a class="text-slate-400 hover:text-primary transition-colors" href="#">
+                            <span class="material-symbols-outlined">public</span>
+                        </a>
+                        <a class="text-slate-400 hover:text-primary transition-colors" href="#">
+                            <span class="material-symbols-outlined">alternate_email</span>
+                        </a>
+                        <a class="text-slate-400 hover:text-primary transition-colors" href="#">
+                            <span class="material-symbols-outlined">groups</span>
+                        </a>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 font-medium">
+                    <p>© 2024 MENU BANAO. All rights reserved.</p>
+                    <div class="flex gap-8 mt-4 md:mt-0">
+                        <a class="hover:text-primary" href="#">Privacy Policy</a>
+                        <a class="hover:text-primary" href="#">Terms of Service</a>
+                        <a class="hover:text-primary" href="#">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script>
-        // --- Session Check ---
-        async function checkSession() {
-            if (!window.sbClient) return;
-            try {
-                const { data: { session } } = await window.sbClient.auth.getSession();
-                if (session) {
-                    const btn = document.getElementById('nav-login-btn');
-                    if (btn) { btn.innerText = 'Dashboard'; btn.href = '../Donero-Cafe/admin.html'; }
-                }
-            } catch (e) { }
-        }
-        window.addEventListener('load', checkSession);
+        // --- Mobile Menu Logic ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            const isHidden = menu.classList.contains('hidden');
 
-        // --- Lead Form ---
-        window.handleFormSubmit = async function (e) {
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.innerText = 'close';
+                document.body.style.overflow = 'hidden';
+            } else {
+                menu.classList.add('hidden');
+                icon.innerText = 'menu';
+                document.body.style.overflow = '';
+            }
+        }
+
+        // --- Smooth Scrolling for Anchors ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // --- Form Submission Logic ---
+        function handleFormSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('form-submit-btn');
             const container = document.getElementById('form-container');
-            const data = new FormData(e.target);
-            const leadData = {
-                restaurant_name: data.get('restaurant'),
-                email: data.get('email'),
-                phone: data.get('phone'),
-                address: data.get('address')
-            };
 
+            // Disable button and show loading
             btn.disabled = true;
-            btn.innerText = 'PROCESSING...';
+            btn.innerHTML = '<span class="flex items-center justify-center gap-2">Processing... <span class="material-symbols-outlined animate-spin text-sm">sync</span></span>';
 
-            try {
-                const { error } = await window.sbClient.from('onboarding_leads').insert([leadData]);
-                if (error) throw error;
+            // Mock API call
+            setTimeout(() => {
                 container.innerHTML = `
-                    <div class="text-center py-12 animate-pop">
-                        <div class="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <span class="material-symbols-outlined text-4xl">check_circle</span>
-                        </div>
-                        <h2 class="text-3xl font-black mb-4">Request Received!</h2>
-                        <p class="text-slate-500 dark:text-slate-400 max-w-lg mx-auto">We will contact you at <b>${leadData.email}</b> within 24 hours.</p>
+                <div class="col-span-1 lg:col-span-2 text-center py-12 animate-pop">
+                    <div class="w-20 h-20 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-4xl">check_circle</span>
                     </div>
-                `;
-            } catch (err) {
-                alert("⚠️ " + err.message);
-                btn.disabled = false;
-                btn.innerText = 'ACTIVATE FREE TRIAL';
-            }
+                    <h2 class="text-3xl lg:text-4xl font-black mb-4">Request Received!</h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto">
+                        Thank you for reaching out. A digital menu specialist will contact you at your provided email within 24 hours to begin your 14-day free trial.
+                    </p>
+                    <button onclick="location.reload()" class="px-8 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl font-bold">
+                        Back to Top
+                    </button>
+                </div>
+            `;
+            }, 2000);
+        }
+
+        // --- Scroll Reveal Animations ---
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
         };
+
+        const revealObserver = new IntersectionObserver(revealCallback, {
+            threshold: 0.1
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        });
     </script>
+
+    <style>
+        /* Custom Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 {
+            transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
+
+        .delay-300 {
+            transition-delay: 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        /* Pop Animation for success state */
+        @keyframes pop {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-pop {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </body>
 
 </html>
