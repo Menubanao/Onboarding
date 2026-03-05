@@ -45,10 +45,9 @@
             <a class="flex items-center gap-2 group" href="index.html">
                 <div
                     class="w-80 h-10  rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <img src="logo.png" alt="logo"
-                    class="w-64 h-64 object-contain">
+                    <img src="logo.png" alt="logo" class="w-64 h-64 object-contain">
                 </div>
-                
+
             </a>
             <a href="https://wa.me/919528034775"
                 class="px-5 py-2 text-sm font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-full transition-all">
@@ -111,66 +110,84 @@
                     </form>
                 </div>
 
-                <!-- SIGNUP SECTION -->
-                <div id="section-signup" class="hidden space-y-6">
-                    <div class="mb-8">
-                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-2">Start your digital menu journey.</p>
+                <!-- Sign Up OTP View (Hidden initially) -->
+                <div id="view-signup-otp" class="space-y-4 hidden animate-slide-down">
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
+                            Code</label>
+                        <div class="relative">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
+                            <input id="input-signup-otp"
+                                class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
+                                placeholder="••••••" type="text" maxlength="6" />
+                        </div>
                     </div>
-                    <form id="form-signup" class="space-y-4">
-                        <div id="view-signup-init" class="space-y-4 transition-all">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full
-                                    Name</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">person</span>
-                                    <input id="input-signup-name"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your full name" type="text" required />
-                                </div>
-                            </div>
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email
-                                    Address</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">mail</span>
-                                    <input id="input-signup-email"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white"
-                                        placeholder="Enter your email address" type="email" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sign Up OTP View (Hidden initially) -->
-                        <div id="view-signup-otp" class="space-y-4 hidden animate-slide-down">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Verification
-                                    Code</label>
-                                <div class="relative">
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">pin</span>
-                                    <input id="input-signup-otp"
-                                        class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white tracking-[0.5em] font-bold text-center"
-                                        placeholder="••••••" type="text" maxlength="6" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="err-signup" class="hidden text-xs text-red-500 font-medium ml-1"></div>
-                        <button id="btn-signup"
-                            class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
-                            type="submit">
-                            <span>Get Started</span>
-                        </button>
-                    </form>
                 </div>
+
+                <!-- Step 4: Password Setup (Hidden initially) -->
+                <div id="view-signup-password" class="space-y-4 hidden animate-slide-down">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Secure your account</h3>
+                        <p class="text-xs text-slate-500">Set a password for future logins.</p>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">New Password</label>
+                        <div class="relative">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">lock</span>
+                            <input id="input-signup-pass"
+                                class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white"
+                                placeholder="Minimum 6 characters" type="password" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Cafe Details (Hidden initially) -->
+                <div id="view-signup-cafe" class="space-y-4 hidden animate-slide-down">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Cafe Information</h3>
+                        <p class="text-xs text-slate-500">Tell us about your restaurant.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Cafe/Restaurant
+                                Name</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">store</span>
+                                <input id="input-signup-cafe-name"
+                                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white"
+                                    placeholder="e.g. Donero Cafe" type="text" />
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Business
+                                Address</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[22px]">location_on</span>
+                                <textarea id="input-signup-cafe-address"
+                                    class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-all text-slate-900 dark:text-white min-h-[80px]"
+                                    placeholder="Full business address"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="err-signup" class="hidden text-xs text-red-500 font-medium ml-1"></div>
+                <button id="btn-signup"
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                    type="submit">
+                    <span>Get Started</span>
+                </button>
+                </form>
             </div>
-            <div class="px-8 pb-8 text-center">
-                <p class="text-slate-500 dark:text-slate-400 text-xs">By continuing, you agree to Menu Banao terms and
-                    policies.</p>
-            </div>
+        </div>
+        <div class="px-8 pb-8 text-center">
+            <p class="text-slate-500 dark:text-slate-400 text-xs">By continuing, you agree to Menu Banao terms and
+                policies.</p>
+        </div>
         </div>
     </main>
 
@@ -246,24 +263,28 @@
                         window.location.href = '../Donero-Cafe/admin.html';
                     }
                 } catch (err) {
-                    errEl.innerText = err.message;
+                    errEl.innerText = err.message || "Invalid or expired code.";
                     errEl.classList.remove('hidden');
                     updateBtn(e.submitter, false, 'Verify Code');
                 }
             }
         };
 
-        // --- Handle Signup ---
+        // --- Handle Signup Steps ---
         document.getElementById('form-signup').onsubmit = async (e) => {
             e.preventDefault();
-            const name = document.getElementById('input-signup-name').value;
-            const email = document.getElementById('input-signup-email').value;
-            const code = document.getElementById('input-signup-otp').value;
             const errEl = document.getElementById('err-signup');
             errEl.classList.add('hidden');
 
+            const name = document.getElementById('input-signup-name').value;
+            const email = document.getElementById('input-signup-email').value;
+            const code = document.getElementById('input-signup-otp').value;
+            const password = document.getElementById('input-signup-pass').value;
+            const cafeName = document.getElementById('input-signup-cafe-name').value;
+            const cafeAddress = document.getElementById('input-signup-cafe-address').value;
+
             if (signupStep === 'INIT') {
-                updateBtn(e.submitter, true, 'Processing');
+                updateBtn(e.submitter, true, 'Sending OTP');
                 try {
                     const { error } = await window.sbClient.auth.signInWithOtp({
                         email, options: { data: { full_name: name }, shouldCreateUser: true }
@@ -272,27 +293,79 @@
                     signupStep = 'OTP';
                     document.getElementById('view-signup-init').classList.add('hidden');
                     document.getElementById('view-signup-otp').classList.remove('hidden');
-                    updateBtn(e.submitter, false, 'Verify & Finish');
+                    updateBtn(e.submitter, false, 'Verify Code');
                 } catch (err) {
                     errEl.innerText = err.message;
                     errEl.classList.remove('hidden');
                     updateBtn(e.submitter, false, 'Get Started');
                 }
-            } else {
-                updateBtn(e.submitter, true, 'Finalizing');
+            }
+            else if (signupStep === 'OTP') {
+                updateBtn(e.submitter, true, 'Verifying');
                 try {
                     const { data, error } = await window.sbClient.auth.verifyOtp({
                         email, token: code, type: 'signup'
                     });
                     if (error) throw error;
-                    if (data.user) {
-                        sessionStorage.setItem('donero_admin_auth', 'true');
-                        window.location.href = '../Donero-Cafe/admin.html';
-                    }
+
+                    // On success, go to Password step
+                    signupStep = 'PASSWORD';
+                    document.getElementById('view-signup-otp').classList.add('hidden');
+                    document.getElementById('view-signup-password').classList.remove('hidden');
+                    updateBtn(e.submitter, false, 'Set Password');
+                } catch (err) {
+                    errEl.innerText = err.message || "Incorrect code.";
+                    errEl.classList.remove('hidden');
+                    updateBtn(e.submitter, false, 'Verify Code');
+                }
+            }
+            else if (signupStep === 'PASSWORD') {
+                if (password.length < 6) {
+                    errEl.innerText = "Password must be at least 6 characters.";
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+                updateBtn(e.submitter, true, 'Saving');
+                try {
+                    const { error } = await window.sbClient.auth.updateUser({ password });
+                    if (error) throw error;
+
+                    signupStep = 'CAFE';
+                    document.getElementById('view-signup-password').classList.add('hidden');
+                    document.getElementById('view-signup-cafe').classList.remove('hidden');
+                    updateBtn(e.submitter, false, 'Complete Onboarding');
                 } catch (err) {
                     errEl.innerText = err.message;
                     errEl.classList.remove('hidden');
-                    updateBtn(e.submitter, false, 'Verify & Finish');
+                    updateBtn(e.submitter, false, 'Set Password');
+                }
+            }
+            else if (signupStep === 'CAFE') {
+                if (!cafeName || !cafeAddress) {
+                    errEl.innerText = "Please fill in all cafe details.";
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+                updateBtn(e.submitter, true, 'Finalizing');
+                try {
+                    const { data: { user } } = await window.sbClient.auth.getUser();
+                    if (!user) throw new Error("User session not found.");
+
+                    // Update profile with cafe details
+                    const { error } = await window.sbClient.from('profiles').update({
+                        cafe_branch: cafeName,
+                        cafe_address: cafeAddress
+                    }).eq('id', user.id);
+
+                    if (error) throw error;
+
+                    // Success! Redirect to Admin
+                    sessionStorage.setItem('donero_admin_auth', 'true');
+                    window.location.href = '../Donero-Cafe/admin.html';
+                } catch (err) {
+                    errEl.innerText = err.message;
+                    errEl.classList.remove('hidden');
+                    updateBtn(e.submitter, false, 'Complete Onboarding');
                 }
             }
         };
@@ -309,4 +382,3 @@
 </body>
 
 </html>
-
