@@ -242,7 +242,8 @@
             </div>
             <div class="mt-8 text-center">
                 <p class="text-slate-400 dark:text-slate-500 text-xs font-medium">By continuing, you agree to MenuBanao
-                    <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Policies</a></p>
+                    <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Policies</a>
+                </p>
             </div>
         </div>
     </main>
@@ -330,16 +331,17 @@
                 }
 
                 // Auth signup
-                const { error } = await window.sbClient.auth.signUp({
+                const { data, error } = await window.sbClient.auth.signUp({
                     email,
                     password,
                     options: { data: { full_name: name } }
                 });
                 if (error) throw error;
 
-                // Success UI
-                document.getElementById('signup-form-container').classList.add('hidden');
-                document.getElementById('signup-success').classList.remove('hidden');
+                if (data.user) {
+                    // Success! Redirect to Cafe Details Step
+                    window.location.href = 'cafeName.html';
+                }
             } catch (err) {
                 errEl.innerText = err.message || "Signup encountered an issue. Please try again.";
                 errEl.classList.remove('hidden');
@@ -351,7 +353,10 @@
         window.addEventListener('load', async () => {
             if (window.sbClient) {
                 const { data: { session } } = await window.sbClient.auth.getSession();
-                if (session) window.location.href = '../Donero-Cafe/admin.html';
+                if (session) {
+                    // If already logged in, go to admin portal
+                    window.location.href = '../Donero-Cafe/admin.html';
+                }
             }
 
             const params = new URLSearchParams(window.location.search);

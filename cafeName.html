@@ -146,20 +146,29 @@
     </footer>
 
     <script>
+        // Check session on load
+        window.addEventListener('load', async () => {
+            if (window.sbClient) {
+                const { data: { session } } = await window.sbClient.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+
         document.getElementById('form-cafe').onsubmit = async (e) => {
             e.preventDefault();
-            const name = document.getElementById('input-cafe-name').value;
+            const cafeName = document.getElementById('input-cafe-name').value;
             const address = document.getElementById('input-address').value;
             const btn = document.getElementById('btn-continue');
             const errEl = document.getElementById('err-cafe');
 
-            if (!name || !address) {
+            if (!cafeName || !address) {
                 errEl.classList.remove('hidden');
                 return;
             }
             errEl.classList.add('hidden');
 
-            // Animation Feedback
             btn.disabled = true;
             btn.innerHTML = `
                 <span class="flex items-center gap-2">
@@ -169,26 +178,44 @@
             `;
 
             try {
-                // Here we would typically update the profile in Supabase
-                // const { error } = await window.sbClient.from('profiles').update({ cafe_name: name, address: address }).eq('id', userId);
+                // Get the logged in user
+                const { data: { user }, error: userError } = await window.sbClient.auth.getUser();
+                if (userError || !user) throw new Error("User session not found.");
 
-                // Simulate success
+                // Insert restaurant data
+                const { error: insertError } = await window.sbClient
+                    .from('restaurants')
+                    .insert({
+                        owner_id: user.id,
+                        restaurant_name: cafeName,
+                        address: address,
+                        email: user.email
+                    });
+
+                if (insertError) throw insertError;
+
+                // Sync with profiles table for admin dashboard compatibility
+                await window.sbClient.from('profiles').update({
+                    cafe_branch: cafeName,
+                    cafe_address: address
+                }).eq('id', user.id);
+
+                // Success Feedback
+                btn.innerHTML = `
+                    <span class="flex items-center gap-2 text-green-100">
+                        Profile Saved!
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </span>
+                `;
+                btn.classList.remove('btn-shimmer');
+                btn.classList.add('bg-green-600');
+
                 setTimeout(() => {
-                    btn.innerHTML = `
-                        <span class="flex items-center gap-2 text-green-100">
-                            Profile Completed!
-                            <span class="material-symbols-outlined">celebration</span>
-                        </span>
-                    `;
-                    btn.classList.remove('btn-shimmer');
-                    btn.classList.add('bg-green-600');
+                    window.location.href = 'passwordSetup.html';
+                }, 800);
 
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }, 1200);
             } catch (err) {
-                errEl.querySelector('#err-text').innerText = err.message;
+                errEl.querySelector('#err-text').innerText = err.message || "Failed to save restaurant details.";
                 errEl.classList.remove('hidden');
                 btn.disabled = false;
                 btn.innerHTML = `<span>Complete Profile</span>`;
