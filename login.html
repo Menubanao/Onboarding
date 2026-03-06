@@ -195,17 +195,6 @@
                                             placeholder="restaurant@email.com" type="email" required />
                                     </div>
                                 </div>
-                                <div class="space-y-2">
-                                    <label
-                                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Password</label>
-                                    <div class="relative group input-focus-effect rounded-xl">
-                                        <span
-                                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">lock</span>
-                                        <input id="input-signup-password"
-                                            class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium"
-                                            placeholder="Minimum 6 characters" type="password" required minlength="6" />
-                                    </div>
-                                </div>
 
                                 <div id="err-signup"
                                     class="hidden animate-fade-in p-4 bg-red-50 dark:bg-red-900/20 text-xs text-red-600 dark:text-red-400 rounded-xl font-bold border border-red-100 dark:border-red-900/30">
@@ -214,9 +203,49 @@
                                 <button id="btn-signup"
                                     class="w-full py-4.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-extrabold rounded-xl shadow-2xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 py-4"
                                     type="submit">
-                                    <span>Register Restaurant</span>
-                                    <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                                    <span>Send Verification OTP</span>
+                                    <span class="material-symbols-outlined text-xl">send</span>
                                 </button>
+                            </form>
+                        </div>
+
+                        <!-- OTP VERIFICATION SECTION -->
+                        <div id="signup-otp-container" class="hidden space-y-8 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
+                                    Verify Email</h1>
+                                <p class="text-slate-500 dark:text-slate-400 font-medium italic">We've sent a 6-digit
+                                    code to <span id="display-email" class="text-primary font-bold"></span></p>
+                            </div>
+
+                            <form id="form-verify-otp" class="space-y-6">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Enter OTP
+                                        Code</label>
+                                    <div class="relative group input-focus-effect rounded-xl">
+                                        <span
+                                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">pin</span>
+                                        <input id="input-otp"
+                                            class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-black tracking-[1em] text-center"
+                                            placeholder="000000" type="text" maxlength="6" required />
+                                    </div>
+                                </div>
+
+                                <div id="err-otp"
+                                    class="hidden animate-fade-in p-4 bg-red-50 dark:bg-red-900/20 text-xs text-red-600 dark:text-red-400 rounded-xl font-bold border border-red-100 dark:border-red-900/30">
+                                </div>
+
+                                <button id="btn-verify"
+                                    class="w-full py-4.5 bg-primary text-white font-extrabold rounded-xl shadow-xl shadow-primary/25 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3 py-4"
+                                    type="submit">
+                                    <span>Verify & Continue</span>
+                                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                                </button>
+
+                                <p class="text-center text-sm text-slate-500">
+                                    Didn't receive code? <button type="button" onclick="resendOtp()"
+                                        class="text-primary font-bold hover:underline">Resend OTP</button>
+                                </p>
                             </form>
                         </div>
 
@@ -309,7 +338,7 @@
             }
         };
 
-        // --- Handle Signup ---
+        // --- Handle Signup (OTP Initiation) ---
         document.getElementById('form-signup').onsubmit = async (e) => {
             e.preventDefault();
             const errEl = document.getElementById('err-signup');
@@ -317,37 +346,94 @@
 
             const name = document.getElementById('input-signup-name').value;
             const email = document.getElementById('input-signup-email').value;
-            const password = document.getElementById('input-signup-password').value;
 
             updateBtn(e.submitter, true, '');
             try {
-                // Check existing
-                const { data: existing } = await window.sbClient.from('profiles').select('id').eq('email', email).maybeSingle();
-                if (existing) {
-                    errEl.innerHTML = "This account already exists. Please <button type='button' onclick='switchTab(\"login\")' class='underline'>Sign In</button>.";
-                    errEl.classList.remove('hidden');
-                    updateBtn(e.submitter, false, 'Register Restaurant');
-                    return;
-                }
-
-                // Auth signup
-                const { data, error } = await window.sbClient.auth.signUp({
+                // 1. Send OTP to user email
+                // Note: signInWithOtp creates a user if they don't exist
+                const { error } = await window.sbClient.auth.signInWithOtp({
                     email,
-                    password,
-                    options: { data: { full_name: name } }
+                    options: {
+                        shouldCreateUser: true
+                    }
                 });
+
                 if (error) throw error;
 
-                if (data.user) {
-                    // Success! Redirect to Cafe Details Step
-                    window.location.href = 'cafeName.html';
-                }
+                // 2. Clear sensitive state and set temp context
+                sessionStorage.setItem('temp_signup_name', name);
+                sessionStorage.setItem('temp_signup_email', email);
+
+                // 3. Switch to OTP UI
+                document.getElementById('display-email').innerText = email;
+                document.getElementById('signup-form-container').classList.add('hidden');
+                document.getElementById('signup-otp-container').classList.remove('hidden');
+
             } catch (err) {
-                errEl.innerText = err.message || "Signup encountered an issue. Please try again.";
+                errEl.innerText = err.message || "Could not send OTP. Please try again.";
                 errEl.classList.remove('hidden');
-                updateBtn(e.submitter, false, 'Register Restaurant');
+                updateBtn(e.submitter, false, 'Send Verification OTP');
             }
         };
+
+        // --- Handle OTP Verification ---
+        document.getElementById('form-verify-otp').onsubmit = async (e) => {
+            e.preventDefault();
+            const token = document.getElementById('input-otp').value;
+            const email = sessionStorage.getItem('temp_signup_email');
+            const name = sessionStorage.getItem('temp_signup_name');
+            const errEl = document.getElementById('err-otp');
+            errEl.classList.add('hidden');
+
+            if (!email || !token) {
+                errEl.innerText = "Session expired. Please try signing up again.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            updateBtn(e.submitter, true, '');
+            try {
+                // 1. Verify the OTP
+                const { data, error } = await window.sbClient.auth.verifyOtp({
+                    email,
+                    token,
+                    type: 'email'
+                });
+
+                if (error) throw error;
+
+                if (data.session) {
+                    // 2. Update user metadata AND profile table with the name provided during signup
+                    await window.sbClient.auth.updateUser({
+                        data: { full_name: name }
+                    });
+
+                    await window.sbClient
+                        .from('profiles')
+                        .update({ full_name: name })
+                        .eq('id', data.user.id);
+
+                    // 3. Success! Redirect to set password
+                    window.location.href = 'passwordSetup.html';
+                } else {
+                    throw new Error("Verification failed. Please check the code.");
+                }
+
+            } catch (err) {
+                errEl.innerText = err.message || "Invalid OTP. Please check your email.";
+                errEl.classList.remove('hidden');
+                updateBtn(e.submitter, false, 'Verify & Continue');
+            }
+        };
+
+        async function resendOtp() {
+            const email = sessionStorage.getItem('temp_signup_email');
+            if (email) {
+                const { error } = await window.sbClient.auth.signInWithOtp({ email });
+                if (error) alert("Error resending OTP: " + error.message);
+                else alert("OTP has been resent to " + email);
+            }
+        }
 
         // Initialize state
         window.addEventListener('load', async () => {
@@ -360,7 +446,13 @@
             }
 
             const params = new URLSearchParams(window.location.search);
-            if (params.get('mode') === 'onboard' || window.location.hash === '#signup') {
+            if (params.get('success') === 'true') {
+                // Show final success state
+                switchTab('signup');
+                document.getElementById('signup-form-container').classList.add('hidden');
+                document.getElementById('signup-otp-container').classList.add('hidden');
+                document.getElementById('signup-success').classList.remove('hidden');
+            } else if (params.get('mode') === 'onboard' || window.location.hash === '#signup') {
                 switchTab('signup');
             } else {
                 switchTab('login');

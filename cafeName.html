@@ -210,9 +210,12 @@
                 btn.classList.remove('btn-shimmer');
                 btn.classList.add('bg-green-600');
 
+                // Final Step: Sign out and redirect to login success state
+                await window.sbClient.auth.signOut();
+
                 setTimeout(() => {
-                    window.location.href = 'passwordSetup.html';
-                }, 800);
+                    window.location.href = 'login.html?success=true';
+                }, 1200);
 
             } catch (err) {
                 errEl.querySelector('#err-text').innerText = err.message || "Failed to save restaurant details.";
