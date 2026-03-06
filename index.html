@@ -142,7 +142,7 @@
                                         <div class="text-[10px] text-slate-400 uppercase tracking-tight">Existing User
                                         </div>
                                     </a>
-                                    <a href="login.html#signup"
+                                    <a href="login.html?mode=onboard"
                                         class="block px-4 py-3 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">
                                         <div class="font-bold">Sign Up</div>
                                         <div class="text-[10px] text-slate-400 uppercase tracking-tight">New User</div>
@@ -150,7 +150,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})"
+                        <button onclick="window.location.href='login.html?mode=onboard'"
                             class="bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 hover:shadow-primary/40 active:scale-95 transition-all duration-300">
                             Get Started
                         </button>
@@ -180,7 +180,7 @@
                         <a onclick="toggleMobileMenu()" href="login.html#login"
                             class="text-center py-3 rounded-lg bg-slate-100 dark:bg-slate-800 font-bold text-sm">Sign
                             In</a>
-                        <a onclick="toggleMobileMenu()" href="login.html#signup"
+                        <a onclick="toggleMobileMenu()" href="login.html?mode=onboard"
                             class="text-center py-3 rounded-lg bg-primary/10 text-primary font-bold text-sm">Sign Up</a>
                     </div>
                 </div>
@@ -215,7 +215,7 @@
                             premium digital experience.
                         </p>
                         <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                            <button onclick="document.getElementById('lead-form').scrollIntoView({behavior: 'smooth'})"
+                            <button onclick="window.location.href='login.html?mode=onboard'"
                                 class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-orange-400 text-white font-bold text-lg rounded-xl shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all transform hover:-translate-y-1">
                                 Create Your Digital Menu
                             </button>

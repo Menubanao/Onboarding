@@ -243,14 +243,24 @@
             tabLogin.className = "flex-1 py-2.5 text-center font-bold text-slate-500 rounded-xl transition-all";
         };
 
-        // --- Auth Logic ---
+        // --- Auth Logic State ---
         let loginStep = 'ID'; // ID or OTP
         let signupStep = 'INIT'; // INIT or OTP
 
         const updateBtn = (btn, loading, text) => {
+            if (!btn) return;
             btn.disabled = loading;
             btn.innerHTML = loading ? `<span>${text}...</span><span class="material-symbols-outlined animate-spin text-sm">sync</span>` : `<span>${text}</span>`;
         };
+
+        // --- Check mode from URL ---
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get('mode');
+            if (mode === 'onboard' || window.location.hash === '#signup') {
+                tabSignup.click();
+            }
+        }
 
         // --- Handle Login ---
         document.getElementById('form-login').onsubmit = async (e) => {
@@ -311,18 +321,40 @@
             const cafeAddress = document.getElementById('input-signup-cafe-address').value;
 
             if (signupStep === 'INIT') {
-                updateBtn(e.submitter, true, 'Sending OTP');
+                if (!name || !email) {
+                    errEl.innerText = "Please provide your name and email.";
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+
+                updateBtn(e.submitter, true, 'Checking email');
                 try {
+                    // Smart Discovery: Check if this email already has a profile (requires email in profiles)
+                    const { data: existing, error: checkError } = await window.sbClient
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email)
+                        .maybeSingle();
+
+                    if (existing) {
+                        errEl.innerHTML = `This email is already registered. <button type="button" onclick="tabLogin.click()" class="underline font-bold">Please login instead.</button>`;
+                        errEl.classList.remove('hidden');
+                        updateBtn(e.submitter, false, 'Get Started');
+                        return;
+                    }
+
+                    updateBtn(e.submitter, true, 'Sending OTP');
                     const { error } = await window.sbClient.auth.signInWithOtp({
                         email, options: { data: { full_name: name }, shouldCreateUser: true }
                     });
+
                     if (error) throw error;
                     signupStep = 'OTP';
                     document.getElementById('view-signup-init').classList.add('hidden');
                     document.getElementById('view-signup-otp').classList.remove('hidden');
                     updateBtn(e.submitter, false, 'Verify Code');
                 } catch (err) {
-                    errEl.innerText = err.message;
+                    errEl.innerText = err.message || "Failed to start signup.";
                     errEl.classList.remove('hidden');
                     updateBtn(e.submitter, false, 'Get Started');
                 }
@@ -397,14 +429,21 @@
             }
         };
 
-        // On Load: Check existing session
-        window.onload = async () => {
+        // On Load: Check existing session and params
+        window.addEventListener('load', async () => {
             if (window.sbClient) {
-                const { data: { session } } = await window.sbClient.auth.getSession();
-                if (session) window.location.href = '../Donero-Cafe/admin.html';
+                try {
+                    const { data: { session } } = await window.sbClient.auth.getSession();
+                    if (session) {
+                        sessionStorage.setItem('donero_admin_auth', 'true');
+                        window.location.href = '../Donero-Cafe/admin.html';
+                    }
+                } catch (e) {
+                    console.warn("Session check issues:", e);
+                }
             }
-            if (window.location.hash === '#signup') tabSignup.click();
-        };
+            checkUrlParams();
+        });
     </script>
 </body>
 
